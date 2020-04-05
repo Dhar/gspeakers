@@ -18,31 +18,31 @@
  * USA
  */
 
-#include "totalfilterplot.h"
+#include "total_filter_plot.hpp"
 
 #include "common.h"
 
 #include <cmath>
 #include <iostream>
 
-TotalFilterPlot::TotalFilterPlot() : m_plot(1, 20000), m_color("blue")
+total_filter_plot::total_filter_plot() : m_plot(1, 20000), m_color("blue")
 {
     add(m_plot);
 
-    signal_plot_crossover.connect(sigc::mem_fun(*this, &TotalFilterPlot::on_plot_crossover));
-    signal_add_crossover_plot.connect(sigc::mem_fun(*this, &TotalFilterPlot::on_add_plot));
+    signal_plot_crossover.connect(sigc::mem_fun(*this, &total_filter_plot::on_plot_crossover));
+    signal_add_crossover_plot.connect(sigc::mem_fun(*this, &total_filter_plot::on_add_plot));
 
     m_plot.set_y_label(_("Magnitude / dB"));
 
     show_all();
 }
 
-TotalFilterPlot::~TotalFilterPlot() = default;
+total_filter_plot::~total_filter_plot() = default;
 
-auto TotalFilterPlot::on_add_plot(std::vector<GSpeakers::Point> const& points,
-                                  Gdk::Color const& color,
-                                  int& output_plot_index,
-                                  Net* n) -> int
+auto total_filter_plot::on_add_plot(std::vector<GSpeakers::Point> const& points,
+                                    Gdk::Color const& color,
+                                    int& output_plot_index,
+                                    Net* n) -> int
 {
     auto const& plot_index = output_plot_index;
 
@@ -89,7 +89,7 @@ auto TotalFilterPlot::on_add_plot(std::vector<GSpeakers::Point> const& points,
     return 0;
 }
 
-void TotalFilterPlot::clear()
+void total_filter_plot::clear()
 {
     m_points.clear();
     m_nets.clear();
@@ -97,11 +97,11 @@ void TotalFilterPlot::clear()
     m_plot.remove_all_plots();
 }
 
-void TotalFilterPlot::on_crossover_selected(Crossover*) { clear(); }
+void total_filter_plot::on_crossover_selected(Crossover*) { clear(); }
 
-void TotalFilterPlot::on_plot_crossover() {}
+void total_filter_plot::on_plot_crossover() {}
 
-auto TotalFilterPlot::on_delete_event(GdkEventAny* event) -> bool
+auto total_filter_plot::on_delete_event(GdkEventAny* event) -> bool
 {
     // Don't delete this window
     return true;
