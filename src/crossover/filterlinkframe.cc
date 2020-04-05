@@ -834,22 +834,12 @@ void FilterLinkFrame::on_plot_crossover()
                 }
             }
         }
-        /* send the spice data to the plot */
-        /* TODO: improve color handling here */
-        Gdk::Color c;
-        if (m_net->get_type() == NET_TYPE_LOWPASS)
-        {
-            c = Gdk::Color("blue");
-        }
-        else if (m_net->get_type() == NET_TYPE_HIGHPASS)
-        {
-            c = Gdk::Color("red");
-        }
-        else if (m_net->get_type() == NET_TYPE_BANDPASS)
-        {
-            c = Gdk::Color("darkgreen");
-        }
-        signal_add_crossover_plot(points, c, &my_filter_plot_index, m_net);
+        Gdk::Color c = m_net->get_type() == NET_TYPE_LOWPASS
+                           ? Gdk::Color("blue")
+                           : m_net->get_type() == NET_TYPE_HIGHPASS ? Gdk::Color("red")
+                                                                    : Gdk::Color("darkgreen");
+        // send the spice data to the plot
+        signal_add_crossover_plot(points, c, my_filter_plot_index, m_net);
 
         if (enable_edit)
         {
