@@ -1,4 +1,4 @@
-/* crossoverimageview.cc
+/* crossover_image_view.cc
  *
  * $Id$
  *
@@ -20,7 +20,7 @@
  * USA
  */
 
-#include "crossoverimageview.h"
+#include "crossover_image_view.hpp"
 
 #include "common.h"
 
@@ -29,24 +29,25 @@
 
 #include <iostream>
 
-CrossoverImageView::CrossoverImageView()
+crossover_image_view::crossover_image_view()
 {
     g_settings.defaultValueBool("ScaleCrossoverImageParts", true);
     m_scale_image_parts = g_settings.getValueBool("ScaleCrossoverImageParts");
 
     g_settings.settings_changed.connect(
-        sigc::mem_fun(*this, &CrossoverImageView::on_settings_changed));
+        sigc::mem_fun(*this, &crossover_image_view::on_settings_changed));
 
     signal_crossover_selected.connect(
-        sigc::mem_fun(*this, &CrossoverImageView::on_crossover_selected));
+        sigc::mem_fun(*this, &crossover_image_view::on_crossover_selected));
 
-    signal_net_modified_by_wizard.connect(sigc::mem_fun(*this, &CrossoverImageView::on_net_modified));
+    signal_net_modified_by_wizard.connect(
+        sigc::mem_fun(*this, &crossover_image_view::on_net_modified));
 
     signal_speakerlist_loaded.connect(
-        sigc::mem_fun(*this, &CrossoverImageView::on_speakerlist_selected));
+        sigc::mem_fun(*this, &crossover_image_view::on_speakerlist_selected));
 }
 
-bool CrossoverImageView::on_expose_event(GdkEventExpose* event)
+bool crossover_image_view::on_expose_event(GdkEventExpose* event)
 {
     // get_window()->draw_drawable(get_style()->get_fg_gc(get_state()), m_refPixmap,
     //                             // Only copy the area that was exposed
@@ -55,7 +56,7 @@ bool CrossoverImageView::on_expose_event(GdkEventExpose* event)
     return false;
 }
 
-bool CrossoverImageView::on_draw(Cairo::RefPtr<Cairo::Context> const& context)
+bool crossover_image_view::on_draw(Cairo::RefPtr<Cairo::Context> const& context)
 {
     Gtk::Allocation allocation = get_allocation();
     auto const width = allocation.get_width();
@@ -66,21 +67,12 @@ bool CrossoverImageView::on_draw(Cairo::RefPtr<Cairo::Context> const& context)
     this->redraw(context);
 }
 
-bool CrossoverImageView::on_configure_event(GdkEventConfigure* event)
+bool crossover_image_view::on_configure_event(GdkEventConfigure* event)
 {
     m_visible = true;
 
-    // m_refPixmap = Gdk::Pixmap::create(get_window(), get_allocation().get_width(),
-    //                                   get_allocation().get_height(), -1);
-
-    // m_refGC = get_style()->get_fg_gc(get_state());
-
-    // m_refColormap = m_refGC->get_colormap();
     white = Gdk::RGBA("rgb (0.0, 0.0, 0.0)");
     black = Gdk::RGBA("rgb (1.0, 1.0, 1.0)");
-
-    // m_refColormap->alloc_color(white);
-    // m_refColormap->alloc_color(black);
 
     Glib::RefPtr<Pango::Context> refPangoContext = get_pango_context();
     m_refLayout = Pango::Layout::create(refPangoContext);
@@ -91,7 +83,7 @@ bool CrossoverImageView::on_configure_event(GdkEventConfigure* event)
     return true;
 }
 
-void CrossoverImageView::redraw(Cairo::RefPtr<Cairo::Context> const& context)
+void crossover_image_view::redraw(Cairo::RefPtr<Cairo::Context> const& context)
 {
     if (!m_visible)
     {
@@ -293,7 +285,7 @@ void CrossoverImageView::redraw(Cairo::RefPtr<Cairo::Context> const& context)
     }
 }
 
-void CrossoverImageView::on_settings_changed(const std::string& setting)
+void crossover_image_view::on_settings_changed(const std::string& setting)
 {
     if (setting == "ScaleCrossoverImageParts")
     {
@@ -311,7 +303,7 @@ void CrossoverImageView::on_settings_changed(const std::string& setting)
     }
 }
 
-void CrossoverImageView::on_crossover_selected(Crossover* selected_crossover)
+void crossover_image_view::on_crossover_selected(Crossover* selected_crossover)
 {
     m_crossover = selected_crossover;
     if (m_visible)
@@ -322,7 +314,7 @@ void CrossoverImageView::on_crossover_selected(Crossover* selected_crossover)
     }
 }
 
-void CrossoverImageView::on_net_modified()
+void crossover_image_view::on_net_modified()
 {
     if (m_crossover != nullptr)
     {
@@ -330,7 +322,7 @@ void CrossoverImageView::on_net_modified()
     }
 }
 
-void CrossoverImageView::on_speakerlist_selected(speaker_list* selected_speaker_list)
+void crossover_image_view::on_speakerlist_selected(speaker_list* selected_speaker_list)
 {
     m_speaker_list = selected_speaker_list;
     if (m_visible)
@@ -341,12 +333,12 @@ void CrossoverImageView::on_speakerlist_selected(speaker_list* selected_speaker_
     }
 }
 
-void CrossoverImageView::draw_lowpass_net(Cairo::RefPtr<Cairo::Context> const& context,
-                                          int x,
-                                          int y,
-                                          int part_width,
-                                          int part_height,
-                                          std::vector<passive_component> const& parts)
+void crossover_image_view::draw_lowpass_net(Cairo::RefPtr<Cairo::Context> const& context,
+                                            int x,
+                                            int y,
+                                            int part_width,
+                                            int part_height,
+                                            std::vector<passive_component> const& parts)
 {
     for (std::size_t i = 0; i < parts.size(); i++)
     {
@@ -370,12 +362,12 @@ void CrossoverImageView::draw_lowpass_net(Cairo::RefPtr<Cairo::Context> const& c
     }
 }
 
-void CrossoverImageView::draw_highpass_net(Cairo::RefPtr<Cairo::Context> const& context,
-                                           int x,
-                                           int y,
-                                           int part_width,
-                                           int part_height,
-                                           std::vector<passive_component> const& parts)
+void crossover_image_view::draw_highpass_net(Cairo::RefPtr<Cairo::Context> const& context,
+                                             int x,
+                                             int y,
+                                             int part_width,
+                                             int part_height,
+                                             std::vector<passive_component> const& parts)
 {
     for (std::size_t i = 0; i < parts.size(); i++)
     {
@@ -399,13 +391,13 @@ void CrossoverImageView::draw_highpass_net(Cairo::RefPtr<Cairo::Context> const& 
     }
 }
 
-void CrossoverImageView::draw_imp_corr_net(Cairo::RefPtr<Cairo::Context> const& context,
-                                           int x,
-                                           int y,
-                                           int part_width,
-                                           int part_height,
-                                           passive_component const& capacitor,
-                                           passive_component const& resistor)
+void crossover_image_view::draw_imp_corr_net(Cairo::RefPtr<Cairo::Context> const& context,
+                                             int x,
+                                             int y,
+                                             int part_width,
+                                             int part_height,
+                                             passive_component const& capacitor,
+                                             passive_component const& resistor)
 {
     auto const local_part_height = std::round(part_height / 2.0);
 
@@ -424,13 +416,13 @@ void CrossoverImageView::draw_imp_corr_net(Cairo::RefPtr<Cairo::Context> const& 
     draw_t_cross(context, x, y + 2 * part_height, part_width, part_height, false);
 }
 
-void CrossoverImageView::draw_damp_net(Cairo::RefPtr<Cairo::Context> const& context,
-                                       int x,
-                                       int y,
-                                       int part_width,
-                                       int part_height,
-                                       passive_component const& r1,
-                                       passive_component const& r2)
+void crossover_image_view::draw_damp_net(Cairo::RefPtr<Cairo::Context> const& context,
+                                         int x,
+                                         int y,
+                                         int part_width,
+                                         int part_height,
+                                         passive_component const& r1,
+                                         passive_component const& r2)
 {
     draw_resistor(context, r1.get_id(), x, y, part_width, part_height, false);
     draw_line(context, x, y + 2 * part_height, part_width, part_height, false);
@@ -439,12 +431,12 @@ void CrossoverImageView::draw_damp_net(Cairo::RefPtr<Cairo::Context> const& cont
     draw_t_cross(context, x + part_width, y + 2 * part_height, part_width, part_height, false);
 }
 
-void CrossoverImageView::draw_driver(Cairo::RefPtr<Cairo::Context> const& context,
-                                     int x,
-                                     int y,
-                                     int part_width,
-                                     int part_height,
-                                     Speaker const& speaker)
+void crossover_image_view::draw_driver(Cairo::RefPtr<Cairo::Context> const& context,
+                                       int x,
+                                       int y,
+                                       int part_width,
+                                       int part_height,
+                                       Speaker const& speaker)
 {
     draw_corner(context, x, y, part_width, part_height, true);
 
@@ -463,13 +455,13 @@ void CrossoverImageView::draw_driver(Cairo::RefPtr<Cairo::Context> const& contex
     draw_corner(context, x, y + 2 * part_height, part_width, part_height, false);
 }
 
-void CrossoverImageView::draw_capacitor(Cairo::RefPtr<Cairo::Context> const& context,
-                                        int id,
-                                        int x,
-                                        int y,
-                                        int width,
-                                        int height,
-                                        bool rotate)
+void crossover_image_view::draw_capacitor(Cairo::RefPtr<Cairo::Context> const& context,
+                                          int id,
+                                          int x,
+                                          int y,
+                                          int width,
+                                          int height,
+                                          bool rotate)
 {
     auto const half_space_y = std::round(height / 2.0);
     auto const half_space_x = std::round(width / 2.0);
@@ -531,13 +523,13 @@ void CrossoverImageView::draw_capacitor(Cairo::RefPtr<Cairo::Context> const& con
     }
 }
 
-void CrossoverImageView::draw_inductor(Cairo::RefPtr<Cairo::Context> const& context,
-                                       int id,
-                                       int x,
-                                       int y,
-                                       int width,
-                                       int height,
-                                       bool rotate)
+void crossover_image_view::draw_inductor(Cairo::RefPtr<Cairo::Context> const& context,
+                                         int id,
+                                         int x,
+                                         int y,
+                                         int width,
+                                         int height,
+                                         bool rotate)
 {
     auto const half_space_y = std::round(height / 2.0);
     auto const half_space_x = std::round(width / 2.0);
@@ -594,13 +586,13 @@ void CrossoverImageView::draw_inductor(Cairo::RefPtr<Cairo::Context> const& cont
     }
 }
 
-void CrossoverImageView::draw_resistor(Cairo::RefPtr<Cairo::Context> const& context,
-                                       int id,
-                                       int x,
-                                       int y,
-                                       int width,
-                                       int height,
-                                       bool rotate)
+void crossover_image_view::draw_resistor(Cairo::RefPtr<Cairo::Context> const& context,
+                                         int id,
+                                         int x,
+                                         int y,
+                                         int width,
+                                         int height,
+                                         bool rotate)
 {
     auto const half_space_y = std::round(height / 2.0);
     auto const half_space_x = std::round(width / 2.0);
@@ -648,12 +640,12 @@ void CrossoverImageView::draw_resistor(Cairo::RefPtr<Cairo::Context> const& cont
     }
 }
 
-void CrossoverImageView::draw_connector(Cairo::RefPtr<Cairo::Context> const& context,
-                                        int x,
-                                        int y,
-                                        int width,
-                                        int height,
-                                        bool positive)
+void crossover_image_view::draw_connector(Cairo::RefPtr<Cairo::Context> const& context,
+                                          int x,
+                                          int y,
+                                          int width,
+                                          int height,
+                                          bool positive)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);
@@ -676,12 +668,12 @@ void CrossoverImageView::draw_connector(Cairo::RefPtr<Cairo::Context> const& con
     context->stroke();
 }
 
-void CrossoverImageView::draw_t_cross(Cairo::RefPtr<Cairo::Context> const& context,
-                                      int x,
-                                      int y,
-                                      int width,
-                                      int height,
-                                      bool upper)
+void crossover_image_view::draw_t_cross(Cairo::RefPtr<Cairo::Context> const& context,
+                                        int x,
+                                        int y,
+                                        int width,
+                                        int height,
+                                        bool upper)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);
@@ -703,12 +695,12 @@ void CrossoverImageView::draw_t_cross(Cairo::RefPtr<Cairo::Context> const& conte
     context->stroke();
 }
 
-void CrossoverImageView::draw_corner(Cairo::RefPtr<Cairo::Context> const& context,
-                                     int x,
-                                     int y,
-                                     int width,
-                                     int height,
-                                     bool upper)
+void crossover_image_view::draw_corner(Cairo::RefPtr<Cairo::Context> const& context,
+                                       int x,
+                                       int y,
+                                       int width,
+                                       int height,
+                                       bool upper)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);
@@ -730,12 +722,12 @@ void CrossoverImageView::draw_corner(Cairo::RefPtr<Cairo::Context> const& contex
     context->stroke();
 }
 
-void CrossoverImageView::draw_line(Cairo::RefPtr<Cairo::Context> const& context,
-                                   int x,
-                                   int y,
-                                   int width,
-                                   int height,
-                                   bool rotate)
+void crossover_image_view::draw_line(Cairo::RefPtr<Cairo::Context> const& context,
+                                     int x,
+                                     int y,
+                                     int width,
+                                     int height,
+                                     bool rotate)
 {
     if (rotate)
     {
@@ -753,12 +745,12 @@ void CrossoverImageView::draw_line(Cairo::RefPtr<Cairo::Context> const& context,
     }
 }
 
-void CrossoverImageView::draw_woofer(Cairo::RefPtr<Cairo::Context> const& context,
-                                     int x,
-                                     int y,
-                                     int width,
-                                     int height,
-                                     bool positive_up)
+void crossover_image_view::draw_woofer(Cairo::RefPtr<Cairo::Context> const& context,
+                                       int x,
+                                       int y,
+                                       int width,
+                                       int height,
+                                       bool positive_up)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);
@@ -798,12 +790,12 @@ void CrossoverImageView::draw_woofer(Cairo::RefPtr<Cairo::Context> const& contex
     context->stroke();
 }
 
-void CrossoverImageView::draw_midrange(Cairo::RefPtr<Cairo::Context> const& context,
-                                       int x,
-                                       int y,
-                                       int width,
-                                       int height,
-                                       bool positive_up)
+void crossover_image_view::draw_midrange(Cairo::RefPtr<Cairo::Context> const& context,
+                                         int x,
+                                         int y,
+                                         int width,
+                                         int height,
+                                         bool positive_up)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);
@@ -846,12 +838,12 @@ void CrossoverImageView::draw_midrange(Cairo::RefPtr<Cairo::Context> const& cont
     context->stroke();
 }
 
-void CrossoverImageView::draw_tweeter(Cairo::RefPtr<Cairo::Context> const& context,
-                                      int x,
-                                      int y,
-                                      int width,
-                                      int height,
-                                      bool positive_up)
+void crossover_image_view::draw_tweeter(Cairo::RefPtr<Cairo::Context> const& context,
+                                        int x,
+                                        int y,
+                                        int width,
+                                        int height,
+                                        bool positive_up)
 {
     auto const half_space_x = std::round(width / 2.0);
     auto const half_space_y = std::round(height / 2.0);

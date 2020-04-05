@@ -23,7 +23,7 @@
 #include "common.h"
 
 #include "crossoverhistory.h"
-#include "crossoverimageview.h"
+#include "crossover_image_view.hpp"
 #include "crossovertreeview.h"
 #include "crossover_wizard.hpp"
 
@@ -68,7 +68,7 @@ private:
     GSpeakersFilterPlot filter_plot;
     TotalFilterPlot total_filter_plot;
     SummedFreqRespPlot summed_freq_resp_plot;
-    CrossoverImageView crossover_image_view;
+    crossover_image_view m_crossover_image_view;
 
     Gtk::MenuItem m_menu_item;
     Gtk::Toolbar* m_toolbar{nullptr};
