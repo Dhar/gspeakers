@@ -17,15 +17,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "crossovertreeview.h"
+#include "crossover_tree_view.hpp"
 
-#include "cell_renderer_popup.hpp"
 #include "common.h"
+#include "cell_renderer_popup.hpp"
 #include "popup_entry.hpp"
 
 #include <iostream>
 
-CrossoverTreeView::CrossoverTreeView() : Gtk::Frame("")
+crossover_tree_view::crossover_tree_view() : Gtk::Frame("")
 {
     set_border_width(2);
     set_shadow_type(Gtk::SHADOW_NONE);
@@ -48,27 +48,28 @@ CrossoverTreeView::CrossoverTreeView() : Gtk::Frame("")
     add_columns();
     m_ScrolledWindow.add(m_TreeView);
 
-    signal_crossover_selected.connect(sigc::mem_fun(*this, &CrossoverTreeView::on_crossover_selected));
+    signal_crossover_selected.connect(
+        sigc::mem_fun(*this, &crossover_tree_view::on_crossover_selected));
     signal_net_modified_by_wizard.connect(
-        sigc::mem_fun(*this, &CrossoverTreeView::on_net_modified_by_wizard));
+        sigc::mem_fun(*this, &crossover_tree_view::on_net_modified_by_wizard));
 
     show_all();
 }
 
-CrossoverTreeView::~CrossoverTreeView() = default;
+crossover_tree_view::~crossover_tree_view() = default;
 
-void CrossoverTreeView::on_net_modified_by_wizard()
+void crossover_tree_view::on_net_modified_by_wizard()
 {
-    std::puts("CrossoverTreeView::on_net_modified_by_wizard");
+    std::puts("crossover_tree_view::on_net_modified_by_wizard");
 
     on_crossover_selected(cover);
 }
 
-void CrossoverTreeView::on_cell_edited_value(const Glib::ustring& path_string,
-                                             const Glib::ustring& new_text)
+void crossover_tree_view::on_cell_edited_value(const Glib::ustring& path_string,
+                                               const Glib::ustring& new_text)
 {
-    std::puts("CrossoverTreeView::on_cell_edited_value");
-    std::cout << "CrossoverTreeView::on_cell_edited_value: path string = " << path_string << "\n";
+    std::puts("crossover_tree_view::on_cell_edited_value");
+    std::cout << "crossover_tree_view::on_cell_edited_value: path string = " << path_string << "\n";
 
     Gtk::TreePath path(path_string);
 
@@ -78,7 +79,7 @@ void CrossoverTreeView::on_cell_edited_value(const Glib::ustring& path_string,
         row[m_columns.value] = std::atof(new_text.c_str());
 
 #ifndef NDEBUG
-        std::cout << "CrossoverTreeView::on_cell_edited_value: path[0:1:2:4] = " << path[0] << ":"
+        std::cout << "crossover_tree_view::on_cell_edited_value: path[0:1:2:4] = " << path[0] << ":"
                   << path[1] << ":" << path[2] << ":" << path[3] << std::endl;
 #endif
         /* Since the stupid signals doesn't seem to work we have to go through the data-containers
@@ -167,14 +168,14 @@ void CrossoverTreeView::on_cell_edited_value(const Glib::ustring& path_string,
             }
         }
 #ifndef NDEBUG
-        std::cout << "CrossoverTreeView::on_cell_edited_value: Id = " << row[m_columns.id] << "\n";
+        std::cout << "crossover_tree_view::on_cell_edited_value: Id = " << row[m_columns.id] << "\n";
 #endif
         // Tell others that we have modified a part
         signal_net_modified_by_user(&net);
     }
 }
 
-CrossoverTreeView::model_columns::model_columns()
+crossover_tree_view::model_columns::model_columns()
 {
     add(id_string);
     add(id);
@@ -185,10 +186,10 @@ CrossoverTreeView::model_columns::model_columns()
     add(visible);
 }
 
-void CrossoverTreeView::on_crossover_selected(Crossover* new_crossover)
+void crossover_tree_view::on_crossover_selected(Crossover* new_crossover)
 {
 #ifndef NDEBUG
-    std::puts("CrossoverTreeView::on_crossover_selected");
+    std::puts("crossover_tree_view::on_crossover_selected");
 #endif
 
     m_refTreeStore->clear();
@@ -260,25 +261,25 @@ void CrossoverTreeView::on_crossover_selected(Crossover* new_crossover)
     }
     std::for_each(begin(m_vecItems),
                   end(m_vecItems),
-                  sigc::mem_fun(*this, &CrossoverTreeView::treestore_add_item));
+                  sigc::mem_fun(*this, &crossover_tree_view::treestore_add_item));
 
     m_TreeView.expand_all();
 
 #ifndef NDEBUG
-    std::puts("CrossoverTreeView::on_crossover_selected finished");
+    std::puts("crossover_tree_view::on_crossover_selected finished");
 #endif
 }
 
-void CrossoverTreeView::create_model()
+void crossover_tree_view::create_model()
 {
     m_refTreeStore = Gtk::TreeStore::create(m_columns);
 
     std::for_each(begin(m_vecItems),
                   end(m_vecItems),
-                  sigc::mem_fun(*this, &CrossoverTreeView::treestore_add_item));
+                  sigc::mem_fun(*this, &crossover_tree_view::treestore_add_item));
 }
 
-void CrossoverTreeView::treestore_add_item(const CellItem_Crossover& foo)
+void crossover_tree_view::treestore_add_item(const CellItem_Crossover& foo)
 {
     Gtk::TreeRow row = *(m_refTreeStore->append());
 
@@ -336,7 +337,7 @@ void CrossoverTreeView::treestore_add_item(const CellItem_Crossover& foo)
     }
 }
 
-void CrossoverTreeView::add_columns()
+void crossover_tree_view::add_columns()
 {
     int col_cnt;
     {
@@ -355,7 +356,7 @@ void CrossoverTreeView::add_columns()
         cell_renderer_popup* pRenderer = Gtk::manage(new cell_renderer_popup());
         pRenderer->property_xalign().set_value(0.0);
         pRenderer->signal_edited().connect(
-            sigc::mem_fun(*this, &CrossoverTreeView::on_cell_edited_value));
+            sigc::mem_fun(*this, &crossover_tree_view::on_cell_edited_value));
 
         col_cnt = m_TreeView.insert_column(_("Value"), *pRenderer, -1);
 
@@ -364,7 +365,7 @@ void CrossoverTreeView::add_columns()
         {
             pColumn->set_cell_data_func(*pRenderer,
                                         sigc::mem_fun(*this,
-                                                      &CrossoverTreeView::value_cell_data_func));
+                                                      &crossover_tree_view::value_cell_data_func));
 
             pColumn->add_attribute(pRenderer->property_editable(), m_columns.editable);
             pColumn->add_attribute(pRenderer->property_visible(), m_columns.visible);
@@ -388,15 +389,15 @@ void CrossoverTreeView::add_columns()
     }
 }
 
-void CrossoverTreeView::value_cell_data_func(Gtk::CellRenderer* cell,
-                                             const Gtk::TreeModel::iterator& iter)
+void crossover_tree_view::value_cell_data_func(Gtk::CellRenderer* cell,
+                                               const Gtk::TreeModel::iterator& iter)
 {
     auto& renderer = dynamic_cast<Gtk::CellRendererText&>(*cell);
     renderer.property_text() = GSpeakers::double_to_ustring((*iter)[m_columns.value], 3, 1);
     renderer.property_xalign() = 1.0;
 }
 
-void CrossoverTreeView::on_realize()
+void crossover_tree_view::on_realize()
 {
     m_TreeView.expand_all();
 
