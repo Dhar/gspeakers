@@ -74,8 +74,8 @@ CrossoverHistory::CrossoverHistory() : Gtk::Frame("")
     // create tree view
     m_TreeView.set_model(m_refListStore);
 
-    Glib::RefPtr<Gtk::TreeSelection> selection = m_TreeView.get_selection();
-    selection->signal_changed().connect(sigc::mem_fun(*this, &CrossoverHistory::on_selection_changed));
+    m_TreeView.get_selection()->signal_changed().connect(
+        sigc::mem_fun(*this, &CrossoverHistory::on_selection_changed));
 
     add_columns();
 
@@ -106,17 +106,14 @@ void CrossoverHistory::on_save_open_files()
 
 void CrossoverHistory::select_first_row()
 {
-    if (!m_crossover_list.data().empty())
+    if (m_crossover_list.data().empty())
     {
-        char* str = nullptr;
-        GString* buffer = g_string_new(str);
-        g_string_printf(buffer, "%d", 0);
-        GtkTreePath* gpath = gtk_tree_path_new_from_string(buffer->str);
-        Gtk::TreePath path(gpath);
-        Gtk::TreeRow row = *(m_refListStore->get_iter(path));
-        Glib::RefPtr<Gtk::TreeSelection> selection = m_TreeView.get_selection();
-        selection->select(row);
+        return;
     }
+
+    Gtk::TreeRow row = *(m_refListStore->get_iter(Gtk::TreePath(std::to_string(0))));
+    Glib::RefPtr<Gtk::TreeSelection> selection = m_TreeView.get_selection();
+    selection->select(row);
 }
 
 void CrossoverHistory::on_net_modified_by_wizard(Net* net)
