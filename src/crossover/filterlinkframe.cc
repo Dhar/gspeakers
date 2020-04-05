@@ -760,13 +760,12 @@ void FilterLinkFrame::on_plot_crossover()
     }
     catch (std::runtime_error const& e)
     {
-        Gtk::MessageDialog dialog(_("FilterLinkFrame::on_plot_crossover: ERROR: ")
-                                      + Glib::ustring(e.what()),
-                                  false,
-                                  Gtk::MESSAGE_ERROR,
-                                  Gtk::BUTTONS_OK,
-                                  true);
-        dialog.run();
+        Gtk::MessageDialog(_("FilterLinkFrame::on_plot_crossover: ERROR: ") + Glib::ustring(e.what()),
+                           false,
+                           Gtk::MESSAGE_ERROR,
+                           Gtk::BUTTONS_OK,
+                           true)
+            .run();
     }
 
     // run spice with created file
