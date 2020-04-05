@@ -50,7 +50,7 @@ class CrossoverHistory : public Gtk::Frame
 public:
     CrossoverHistory();
     ~CrossoverHistory() override;
-    /* public callbacks, for use in container class */
+
     void on_open_xml();
     void on_append_xml();
     void on_new_copy();
@@ -63,7 +63,6 @@ public:
     void select_first_row();
 
 protected:
-    /* callbacks */
     void open_xml(const std::string& filename);
     void append_xml(const std::string& filename);
     void save_as_xml(const std::string& filename);
@@ -76,7 +75,7 @@ protected:
     void on_save_open_files();
     void type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter);
 
-    /* Helper member functions */
+protected:
     virtual void create_model();
     virtual void add_columns();
     virtual void add_item(Crossover const& foo);
