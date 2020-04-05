@@ -79,7 +79,7 @@ void speaker_list::to_xml(const std::string& filename)
     }
 }
 
-std::ostream& operator<<(std::ostream& output, const speaker_list& speaker_list)
+auto operator<<(std::ostream& output, const speaker_list& speaker_list) -> std::ostream&
 {
     output << _("Speaker List") << "\n";
 
@@ -90,7 +90,7 @@ std::ostream& operator<<(std::ostream& output, const speaker_list& speaker_list)
     return output;
 }
 
-Speaker speaker_list::get_speaker_by_id_string(std::string const& id_string)
+auto speaker_list::get_speaker_by_id_string(std::string const& id_string) -> Speaker
 {
     auto const location = std::find_if(begin(m_speaker_list),
                                        end(m_speaker_list),

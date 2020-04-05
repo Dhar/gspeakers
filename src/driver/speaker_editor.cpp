@@ -238,7 +238,7 @@ speaker_editor::speaker_editor()
     signal_save_open_files.connect(sigc::mem_fun(*this, &speaker_editor::on_save_open_files));
 }
 
-Gtk::MenuItem& speaker_editor::get_menu()
+auto speaker_editor::get_menu() -> Gtk::MenuItem&
 {
     m_menu_item.set_label("Driver");
 
@@ -292,7 +292,7 @@ Gtk::MenuItem& speaker_editor::get_menu()
     // menulist[MENU_INDEX_DELETE].set_sensitive(false);
 }
 
-Gtk::Toolbar& speaker_editor::get_toolbar()
+auto speaker_editor::get_toolbar() -> Gtk::Toolbar&
 {
     if (m_toolbar == nullptr)
     {
@@ -784,8 +784,9 @@ void speaker_editor::draw_impedance_plot(Speaker const& s, bool update)
 
                 if (update)
                 {
-                    plot.replace_plot(!(s.get_freq_resp_filename().empty()
-                                        || !g_settings.getValueBool("DrawDriverFreqRespPlot")),
+                    plot.replace_plot(static_cast<int>(!(s.get_freq_resp_filename().empty()
+                                                         || !g_settings.getValueBool("DrawDriverFre"
+                                                                                     "qRespPlot"))),
                                       points,
                                       Gdk::Color("red"));
                 }
@@ -1014,7 +1015,7 @@ void speaker_editor::append_xml(const std::string& filename)
     }
 }
 
-bool speaker_editor::open_xml(const std::string& filename)
+auto speaker_editor::open_xml(const std::string& filename) -> bool
 {
     if (filename.empty())
     {

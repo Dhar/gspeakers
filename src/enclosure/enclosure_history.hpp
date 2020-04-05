@@ -75,7 +75,7 @@ protected:
     void on_add_plot(Box* box, Speaker* speaker);
     void on_append_box(Box* box);
     void on_add_to_boxlist(Box* b);
-    bool on_delete_event(GdkEventAny* event) override;
+    auto on_delete_event(GdkEventAny* event) -> bool override;
     void on_plot_selected(int i);
     void on_save_open_files();
     void type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter);

@@ -96,7 +96,7 @@ void FilterLinkFrame::initialise_dampening()
 
     Speaker speaker;
 
-    if (m_speaker_list)
+    if (m_speaker_list != nullptr)
     {
         speaker = m_speaker_list->get_speaker_by_id_string(m_speaker_combo.get_active_text());
     }
@@ -647,11 +647,11 @@ void FilterLinkFrame::on_param_changed()
             m_net->set_has_imp_corr(false);
         }
 
-        m_net->set_adv_imp_model(m_adv_imp_model_checkbutton.get_active());
+        m_net->set_adv_imp_model(static_cast<int>(m_adv_imp_model_checkbutton.get_active()));
 
         std::puts("Checking dampening correction state");
 
-        if (m_damp_spinbutton.get_value_as_int())
+        if (m_damp_spinbutton.get_value_as_int() != 0)
         {
             m_net->set_has_damp(true);
 
@@ -720,7 +720,7 @@ void FilterLinkFrame::on_speakerlist_loaded(speaker_list* speaker_list)
 
     m_speaker_combo.remove_all();
 
-    if (m_speaker_list)
+    if (m_speaker_list != nullptr)
     {
         for (auto& iter : m_speaker_list->data())
         {
@@ -748,7 +748,7 @@ void FilterLinkFrame::on_plot_crossover()
 
     // Create spice code for this net
     Speaker speaker;
-    if (m_speaker_list)
+    if (m_speaker_list != nullptr)
     {
         speaker = m_speaker_list->get_speaker_by_id_string(m_speaker_combo.get_active_text());
     }
@@ -879,7 +879,8 @@ void FilterLinkFrame::on_plot_crossover()
     }
 }
 
-std::vector<double> FilterLinkFrame::get_filter_params(int net_name_type, int net_order, int net_type)
+auto FilterLinkFrame::get_filter_params(int net_name_type, int net_order, int net_type)
+    -> std::vector<double>
 {
     std::puts("Populating filter parameters");
 

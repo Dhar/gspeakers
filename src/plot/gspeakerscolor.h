@@ -27,7 +27,7 @@ public:
     GSpeakersColor();
 
     /// Get the color string and cycle to the next color
-    std::string const& get_color_string();
+    auto get_color_string() -> std::string const&;
 
     void unget_color_string(const std::string& s);
 

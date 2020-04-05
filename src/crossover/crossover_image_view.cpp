@@ -47,7 +47,7 @@ crossover_image_view::crossover_image_view()
         sigc::mem_fun(*this, &crossover_image_view::on_speakerlist_selected));
 }
 
-bool crossover_image_view::on_expose_event(GdkEventExpose* event)
+auto crossover_image_view::on_expose_event(GdkEventExpose* event) -> bool
 {
     // get_window()->draw_drawable(get_style()->get_fg_gc(get_state()), m_refPixmap,
     //                             // Only copy the area that was exposed
@@ -56,7 +56,7 @@ bool crossover_image_view::on_expose_event(GdkEventExpose* event)
     return false;
 }
 
-bool crossover_image_view::on_draw(Cairo::RefPtr<Cairo::Context> const& context)
+auto crossover_image_view::on_draw(Cairo::RefPtr<Cairo::Context> const& context) -> bool
 {
     Gtk::Allocation allocation = get_allocation();
     auto const width = allocation.get_width();
@@ -67,7 +67,7 @@ bool crossover_image_view::on_draw(Cairo::RefPtr<Cairo::Context> const& context)
     this->redraw(context);
 }
 
-bool crossover_image_view::on_configure_event(GdkEventConfigure* event)
+auto crossover_image_view::on_configure_event(GdkEventConfigure* event) -> bool
 {
     m_visible = true;
 

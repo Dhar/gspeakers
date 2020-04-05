@@ -38,13 +38,13 @@ public:
     void to_xml(const std::string& filename); // Maybe this one should throw an exception
 
     /// Print part data to stdout
-    friend std::ostream& operator<<(std::ostream& output, const speaker_list& speaker_list);
+    friend auto operator<<(std::ostream& output, const speaker_list& speaker_list) -> std::ostream&;
 
-    std::vector<Speaker>& data() noexcept { return m_speaker_list; }
+    auto data() noexcept -> std::vector<Speaker>& { return m_speaker_list; }
 
-    std::vector<Speaker> const& data() const noexcept { return m_speaker_list; }
+    auto data() const noexcept -> std::vector<Speaker> const& { return m_speaker_list; }
 
-    Speaker get_speaker_by_id_string(const std::string& id_string);
+    auto get_speaker_by_id_string(const std::string& id_string) -> Speaker;
 
     /// Remove all items
     void clear();

@@ -130,7 +130,7 @@ Speaker::Speaker(xmlNodePtr parent)
     node = node->next;
 }
 
-xmlNodePtr Speaker::to_xml_node(xmlNodePtr parent)
+auto Speaker::to_xml_node(xmlNodePtr parent) -> xmlNodePtr
 {
     std::array<gchar, 10> buffer;
 
@@ -193,7 +193,7 @@ xmlNodePtr Speaker::to_xml_node(xmlNodePtr parent)
     return speaker;
 }
 
-std::ostream& operator<<(std::ostream& output, const Speaker& speaker)
+auto operator<<(std::ostream& output, const Speaker& speaker) -> std::ostream&
 {
     output << speaker.m_id_string << "\n"
            << _("Id:   ") << speaker.m_id << "\n"

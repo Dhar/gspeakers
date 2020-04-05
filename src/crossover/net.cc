@@ -198,14 +198,7 @@ void Net::parse_has_imp_corr(xmlNodePtr node)
 {
     if ((node != nullptr) && (g_ascii_strncasecmp((char*)node->name, "has_imp_corr", 12) == 0))
     {
-        if (g_ascii_strncasecmp((char*)xmlNodeGetContent(node), "1", 1) == 0)
-        {
-            m_has_imp_corr = true;
-        }
-        else
-        {
-            m_has_imp_corr = false;
-        }
+        m_has_imp_corr = g_ascii_strncasecmp((char*)xmlNodeGetContent(node), "1", 1) == 0;
         try
         {
             parse_has_damp(node->next);
@@ -466,7 +459,7 @@ void Net::parse_inv_pol(xmlNodePtr node)
     }
 }
 
-xmlNodePtr Net::to_xml_node(xmlNodePtr parent)
+auto Net::to_xml_node(xmlNodePtr parent) -> xmlNodePtr
 {
     xmlNodePtr net = xmlNewChild(parent, nullptr, (xmlChar*)("net"), nullptr);
     xmlNodePtr field = xmlNewChild(net, nullptr, (xmlChar*)("type"), nullptr);
@@ -521,7 +514,7 @@ xmlNodePtr Net::to_xml_node(xmlNodePtr parent)
     return net;
 }
 
-std::string Net::to_SPICE(Speaker& s, bool use_gnucap)
+auto Net::to_SPICE(Speaker& s, bool use_gnucap) -> std::string
 {
     std::string tmp_dir = Glib::get_tmp_dir();
 #ifdef TARGET_WIN32
@@ -764,7 +757,7 @@ std::string Net::to_SPICE(Speaker& s, bool use_gnucap)
     return tmp_file;
 }
 
-std::ostream& operator<<(std::ostream& output, const Net& net)
+auto operator<<(std::ostream& output, const Net& net) -> std::ostream&
 {
     output << _("***Net*** ******") << "\n"
            << _("Id:       ") << net.m_id << "\n"
