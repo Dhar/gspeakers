@@ -56,8 +56,6 @@ CrossoverList::CrossoverList(const std::string& filename)
     }
 }
 
-void CrossoverList::clear() { m_crossover_list.clear(); }
-
 void CrossoverList::to_xml(const std::string& filename)
 {
     xmlDocPtr doc = xmlNewDoc((xmlChar*)("1.0"));
