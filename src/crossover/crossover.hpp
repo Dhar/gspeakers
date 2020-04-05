@@ -15,8 +15,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GFILTER_CROSSOVER_H
-#define __GFILTER_CROSSOVER_H
+#pragma once
 
 #include "common.h"
 #include "gspeakersobject.h"
@@ -42,21 +41,22 @@ class Crossover : public GSpeakersObject
 public:
     Crossover(int type = CROSSOVER_TYPE_TWOWAY, std::string id_string = "Crossover");
 
-    /* Construct a part from an xml node */
+    /// Construct a part from an xml node
     Crossover(xmlNodePtr parent);
 
-    /* Convert data for a part to an xml node, throws std::runtime_error on failure */
-    xmlNodePtr to_xml_node(xmlNodePtr parent);
+    /// Convert data for a part to an xml node
+    /// \throw std::runtime_error on failure
+    xmlNodePtr to_xml_node(xmlNodePtr parent) noexcept(false);
 
-    /* Print part data to stdout */
-    friend std::ostream& operator<<(std::ostream& o, const Crossover& crossover);
+    /// Print part data to stdout
+    friend std::ostream& operator<<(std::ostream& o, Crossover const& crossover);
 
-    std::vector<Net>& networks() { return m_networks; }
+    auto networks() -> std::vector<Net>& { return m_networks; }
 
-    std::vector<Net> const& networks() const { return m_networks; }
+    auto networks() const -> std::vector<Net> const& { return m_networks; }
 
-    /* return id_string for this crossover */
-    std::string const& get_id_string() const;
+    /// \return id_string for this crossover
+    auto get_id_string() const -> std::string const&;
 
     void set_id_string(std::string id_string);
 
@@ -70,5 +70,3 @@ protected:
     std::vector<Net> m_networks;
     std::string m_id_string;
 };
-
-#endif
