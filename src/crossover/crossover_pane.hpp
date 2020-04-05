@@ -22,7 +22,7 @@
 
 #include "common.h"
 
-#include "crossoverhistory.h"
+#include "crossover_history.hpp"
 #include "crossover_image_view.hpp"
 #include "crossover_tree_view.hpp"
 #include "crossover_wizard.hpp"
@@ -66,7 +66,7 @@ private:
 
     crossover_wizard m_crossover_wizard;
     crossover_tree_view m_crossover_treeview;
-    CrossoverHistory m_crossover_history;
+    crossover_history m_crossover_history;
     filter_plot m_filter_plot;
     total_filter_plot m_total_filter_plot;
     frequency_response_plot m_summed_freq_resp_plot;
