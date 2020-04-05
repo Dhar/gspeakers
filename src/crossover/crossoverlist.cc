@@ -40,7 +40,7 @@ CrossoverList::CrossoverList(const std::string& filename)
             {
                 try
                 {
-                    m_crossover_list.emplace_back(children);
+                    m_data.emplace_back(children);
                 }
                 catch (std::runtime_error const& error)
                 {
@@ -63,7 +63,7 @@ void CrossoverList::to_xml(const std::string& filename)
     xmlNodePtr node = xmlNewDocNode(doc, nullptr, (xmlChar*)("crossoverlist"), nullptr);
     xmlDocSetRootElement(doc, node);
 
-    for (auto& from : m_crossover_list)
+    for (auto& from : m_data)
     {
         from.to_xml_node(node);
     }
@@ -78,7 +78,7 @@ auto operator<<(std::ostream& output, const CrossoverList& crossover_list) -> st
 {
     output << "Crossover List\n";
 
-    for (const auto& from : crossover_list.m_crossover_list)
+    for (const auto& from : crossover_list.m_data)
     {
         output << from;
     }
