@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  GSpeakersFileChooserDialog Copyright (C) 2004 Daniel Sundberg
+  file_chooser_dialog Copyright (C) 2004 Daniel Sundberg
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -17,13 +17,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "gspeakersfilechooser.h"
+#include "file_chooser.hpp"
 
 #include <gtkmm/stock.h>
 
-GSpeakersFileChooserDialog::GSpeakersFileChooserDialog(const Glib::ustring& title,
-                                                       Gtk::FileChooserAction action,
-                                                       const std::string& default_filename)
+file_chooser_dialog::file_chooser_dialog(const Glib::ustring& title,
+                                         Gtk::FileChooserAction action,
+                                         const std::string& default_filename)
     : m_file_chooser(title, action)
 {
     m_file_chooser.add_button(Gtk::Stock::CANCEL, FILE_CHOOSER_CANCEL);

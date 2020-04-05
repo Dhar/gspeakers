@@ -19,7 +19,7 @@
 
 #include "crossoverhistory.h"
 
-#include "gspeakersfilechooser.h"
+#include "file_chooser.hpp"
 
 #include <gtkmm/eventbox.h>
 #include <gtkmm/messagedialog.h>
@@ -141,7 +141,7 @@ CrossoverHistory::~CrossoverHistory()
 
 void CrossoverHistory::on_open_xml()
 {
-    GSpeakersFileChooserDialog fc(_("Open crossover xml"));
+    file_chooser_dialog fc(_("Open crossover xml"));
     std::string const& filename = fc.get_filename();
     if (!filename.empty())
     {
@@ -151,7 +151,7 @@ void CrossoverHistory::on_open_xml()
 
 void CrossoverHistory::on_append_xml()
 {
-    GSpeakersFileChooserDialog fc(_("Append crossover xml"));
+    file_chooser_dialog fc(_("Append crossover xml"));
     std::string const& filename = fc.get_filename();
     if (filename.empty())
     {
@@ -397,7 +397,7 @@ void CrossoverHistory::on_save_as()
 #ifndef NDEBUG
     std::cout << "save as" << std::endl;
 #endif
-    GSpeakersFileChooserDialog fc(_("Save crossover xml as"),
+    file_chooser_dialog fc(_("Save crossover xml as"),
                                   Gtk::FILE_CHOOSER_ACTION_SAVE,
                                   m_filename);
     std::string const& filename = fc.get_filename();

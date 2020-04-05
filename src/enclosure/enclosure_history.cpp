@@ -19,7 +19,7 @@
 
 #include "enclosure_history.hpp"
 
-#include "gspeakersfilechooser.h"
+#include "file_chooser.hpp"
 
 #include <gtkmm/messagedialog.h>
 
@@ -127,7 +127,7 @@ bool enclosure_history::on_delete_event(GdkEventAny* event)
 
 void enclosure_history::on_open_xml()
 {
-    GSpeakersFileChooserDialog fc(_("Open box xml"));
+    file_chooser_dialog fc(_("Open box xml"));
     std::string const& filename = fc.get_filename();
     if (!filename.empty())
     {
@@ -137,7 +137,7 @@ void enclosure_history::on_open_xml()
 
 void enclosure_history::on_append_xml()
 {
-    GSpeakersFileChooserDialog fc(_("Append box xml"));
+    file_chooser_dialog fc(_("Append box xml"));
     std::string const& filename = fc.get_filename();
     if (!filename.empty())
     {
@@ -329,7 +329,7 @@ void enclosure_history::on_save()
 
 void enclosure_history::on_save_as()
 {
-    GSpeakersFileChooserDialog fc(_("Save box xml as"), Gtk::FILE_CHOOSER_ACTION_SAVE, m_filename);
+    file_chooser_dialog fc(_("Save box xml as"), Gtk::FILE_CHOOSER_ACTION_SAVE, m_filename);
 
     std::string const& filename = fc.get_filename();
     if (!filename.empty())
