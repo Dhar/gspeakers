@@ -168,17 +168,17 @@ void CrossoverHistory::open_xml(const std::string& filename)
         m_refListStore->clear();
 
         m_filename = filename;
-        std::for_each(temp_crossover_list.data().begin(),
-                      temp_crossover_list.data().end(),
+        std::for_each(begin(temp_crossover_list.data()),
+                      end(temp_crossover_list.data()),
                       sigc::mem_fun(*this, &CrossoverHistory::add_item));
 
-        /* Delete items in crossover_list */
+        // Delete items in crossover_list
         m_crossover_list.data().clear();
         m_crossover_list.data().insert(begin(m_crossover_list.data()),
-                                                 temp_crossover_list.data().begin(),
-                                                 temp_crossover_list.data().end());
+                                       begin(temp_crossover_list.data()),
+                                       end(temp_crossover_list.data()));
 
-        /* Select the first item in the list */
+        // Select the first item in the list
         if (!m_crossover_list.data().empty())
         {
             Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
@@ -444,8 +444,7 @@ void CrossoverHistory::on_remove()
             m_refListStore->erase(iter);
 
             if (index < (int)m_crossover_list.data().size())
-                m_crossover_list.data().erase(m_crossover_list.data().begin()
-                                                        + index);
+                m_crossover_list.data().erase(m_crossover_list.data().begin() + index);
         }
     }
     Gtk::TreePath path(std::to_string(index > 0 ? index - 1 : 0));
