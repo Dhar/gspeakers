@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include "filterlinkframe.h"
+#include "filter_link_frame.hpp"
 
 #include "common.h"
 #include "plot.hpp"
@@ -30,7 +30,9 @@
 #include <fstream>
 #include <iostream>
 
-FilterLinkFrame::FilterLinkFrame(Net* net, const std::string& description, speaker_list* speaker_list)
+filter_link_frame::filter_link_frame(Net* net,
+                                     const std::string& description,
+                                     speaker_list* speaker_list)
     : Gtk::Frame(""),
       m_lower_co_freq_digits(Gtk::Adjustment::create(2000, 1, 20000, 1, 100)),
       m_higher_co_freq_digits(Gtk::Adjustment::create(2000, 1, 20000, 1, 100)),
@@ -89,7 +91,7 @@ FilterLinkFrame::FilterLinkFrame(Net* net, const std::string& description, speak
     enable_edit = true;
 }
 
-void FilterLinkFrame::initialise_dampening()
+void filter_link_frame::initialise_dampening()
 {
     // Set damp value in dB here
     auto const r_ser = m_net->get_damp_R1().get_value();
@@ -109,7 +111,7 @@ void FilterLinkFrame::initialise_dampening()
                      + 1.0)));
 }
 
-void FilterLinkFrame::initialise_speaker_combobox()
+void filter_link_frame::initialise_speaker_combobox()
 {
     std::string const& speaker_name = m_net->get_speaker();
 
@@ -135,7 +137,7 @@ void FilterLinkFrame::initialise_speaker_combobox()
     m_vbox.pack_start(m_speaker_combo);
 }
 
-void FilterLinkFrame::initialise_highpass_filter()
+void filter_link_frame::initialise_highpass_filter()
 {
     Gtk::Frame* frame = Gtk::manage(new Gtk::Frame(""));
 
@@ -186,7 +188,7 @@ void FilterLinkFrame::initialise_highpass_filter()
     this->set_family(m_higher_type_combo, m_net->get_highpass_order(), m_net->get_highpass_family());
 }
 
-void FilterLinkFrame::initialise_lowpass_filter()
+void filter_link_frame::initialise_lowpass_filter()
 {
     Gtk::Frame* frame = Gtk::manage(new Gtk::Frame(""));
     frame->set_border_width(2);
@@ -235,57 +237,58 @@ void FilterLinkFrame::initialise_lowpass_filter()
     this->set_family(m_lower_type_combo, m_net->get_lowpass_order(), m_net->get_lowpass_family());
 }
 
-void FilterLinkFrame::connect_signals()
+void filter_link_frame::connect_signals()
 {
-    m_speaker_combo.signal_changed().connect(sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+    m_speaker_combo.signal_changed().connect(
+        sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
 
     if ((m_net->get_type() & NET_TYPE_LOWPASS) != 0)
     {
         m_lower_order_combo->signal_changed().connect(
-            sigc::bind(sigc::mem_fun(*this, &FilterLinkFrame::on_order_selected),
+            sigc::bind(sigc::mem_fun(*this, &filter_link_frame::on_order_selected),
                        m_lower_order_combo,
                        m_lower_type_combo));
         m_lower_type_combo->signal_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
         m_lower_order_combo->signal_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
         m_lower_co_freq_spinbutton->signal_value_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
     }
     if ((m_net->get_type() & NET_TYPE_HIGHPASS) != 0)
     {
         m_higher_order_combo->signal_changed().connect(
-            sigc::bind(sigc::mem_fun(*this, &FilterLinkFrame::on_order_selected),
+            sigc::bind(sigc::mem_fun(*this, &filter_link_frame::on_order_selected),
                        m_higher_order_combo,
                        m_higher_type_combo));
         m_higher_order_combo->signal_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
         m_higher_type_combo->signal_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
         m_higher_co_freq_spinbutton->signal_value_changed().connect(
-            sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+            sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
     }
 
     m_imp_corr_checkbutton.signal_toggled().connect(
-        sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+        sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
 
     m_damp_spinbutton.signal_value_changed().connect(
-        sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+        sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
 
     m_adv_imp_model_checkbutton.signal_toggled().connect(
-        sigc::mem_fun(*this, &FilterLinkFrame::on_param_changed));
+        sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
 
-    signal_net_modified_by_user.connect(sigc::mem_fun(*this, &FilterLinkFrame::on_net_updated));
-    signal_plot_crossover.connect(sigc::mem_fun(*this, &FilterLinkFrame::on_clear_and_plot));
+    signal_net_modified_by_user.connect(sigc::mem_fun(*this, &filter_link_frame::on_net_updated));
+    signal_plot_crossover.connect(sigc::mem_fun(*this, &filter_link_frame::on_clear_and_plot));
 
-    signal_speakerlist_loaded.connect(sigc::mem_fun(*this, &FilterLinkFrame::on_speakerlist_loaded));
-    g_settings.settings_changed.connect(sigc::mem_fun(*this, &FilterLinkFrame::on_settings_changed));
+    signal_speakerlist_loaded.connect(sigc::mem_fun(*this, &filter_link_frame::on_speakerlist_loaded));
+    g_settings.settings_changed.connect(sigc::mem_fun(*this, &filter_link_frame::on_settings_changed));
 }
 
-FilterLinkFrame::~FilterLinkFrame() = default;
+filter_link_frame::~filter_link_frame() = default;
 
-void FilterLinkFrame::on_order_selected(Gtk::ComboBoxText const* order_box,
-                                        Gtk::ComboBoxText* type_box)
+void filter_link_frame::on_order_selected(Gtk::ComboBoxText const* order_box,
+                                          Gtk::ComboBoxText* type_box)
 {
     if (type_box->get_active())
     {
@@ -330,7 +333,7 @@ void FilterLinkFrame::on_order_selected(Gtk::ComboBoxText const* order_box,
     std::puts("returning from on_order_selected");
 }
 
-void FilterLinkFrame::on_settings_changed(const std::string& setting)
+void filter_link_frame::on_settings_changed(const std::string& setting)
 {
     if (setting == "DisableFilterAmp")
     {
@@ -338,11 +341,11 @@ void FilterLinkFrame::on_settings_changed(const std::string& setting)
     }
 }
 
-void FilterLinkFrame::on_param_changed()
+void filter_link_frame::on_param_changed()
 {
     if (enable_edit)
     {
-        std::puts("FilterLinkFrame::on_param_changed");
+        std::puts("filter_link_frame::on_param_changed");
 
         enable_edit = false;
 
@@ -685,12 +688,12 @@ void FilterLinkFrame::on_param_changed()
     }
 }
 
-void FilterLinkFrame::on_net_updated(Net* net)
+void filter_link_frame::on_net_updated(Net* net)
 {
     if (m_net->get_id() == net->get_id())
     {
 #ifdef OUPUTDEBUG
-        std::cout << "FilterLinkFrame::on_net_updated" << std::endl;
+        std::cout << "filter_link_frame::on_net_updated" << std::endl;
 #endif
 
         if (g_settings.getValueBool("AutoUpdateFilterPlots"))
@@ -700,16 +703,16 @@ void FilterLinkFrame::on_net_updated(Net* net)
     }
 }
 
-void FilterLinkFrame::on_clear_and_plot()
+void filter_link_frame::on_clear_and_plot()
 {
     my_filter_plot_index = -1;
     on_plot_crossover();
 }
 
-void FilterLinkFrame::on_speakerlist_loaded(speaker_list* speaker_list)
+void filter_link_frame::on_speakerlist_loaded(speaker_list* speaker_list)
 {
 #ifndef NDEBUG
-    std::puts("FilterLinkFrame::on_speakerlist_loaded");
+    std::puts("filter_link_frame::on_speakerlist_loaded");
 #endif
     m_speaker_list = speaker_list;
 
@@ -742,7 +745,7 @@ void FilterLinkFrame::on_speakerlist_loaded(speaker_list* speaker_list)
     }
 }
 
-void FilterLinkFrame::on_plot_crossover()
+void filter_link_frame::on_plot_crossover()
 {
     std::puts("DEBUG: plotting cross-over");
 
@@ -760,7 +763,8 @@ void FilterLinkFrame::on_plot_crossover()
     }
     catch (std::runtime_error const& e)
     {
-        Gtk::MessageDialog(_("FilterLinkFrame::on_plot_crossover: ERROR: ") + Glib::ustring(e.what()),
+        Gtk::MessageDialog(_("filter_link_frame::on_plot_crossover: ERROR: ")
+                               + Glib::ustring(e.what()),
                            false,
                            Gtk::MESSAGE_ERROR,
                            Gtk::BUTTONS_OK,
@@ -780,11 +784,11 @@ void FilterLinkFrame::on_plot_crossover()
         cmd += " -b -o " + spice_filename + ".out " + spice_filename;
     }
 
-    std::cout << "FilterLinkFrame::on_plot_crossover: running SPICE with \"" + cmd + "\"\n";
+    std::cout << "filter_link_frame::on_plot_crossover: running SPICE with \"" + cmd + "\"\n";
 
     system(cmd.c_str());
 
-    std::cout << "FilterLinkFrame::on_plot_crossover: SPICE done\n";
+    std::cout << "filter_link_frame::on_plot_crossover: SPICE done\n";
 
     // extract spice output into a vector
     std::string spice_output_file = spice_filename + ".out";
@@ -879,7 +883,7 @@ void FilterLinkFrame::on_plot_crossover()
     }
 }
 
-auto FilterLinkFrame::get_filter_params(int net_name_type, int net_order, int net_type)
+auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int net_type)
     -> std::vector<double>
 {
     std::puts("Populating filter parameters");
@@ -1108,10 +1112,10 @@ auto FilterLinkFrame::get_filter_params(int net_name_type, int net_order, int ne
     return nums;
 }
 
-void FilterLinkFrame::set_family(Gtk::ComboBoxText* option_menu, int order, int family)
+void filter_link_frame::set_family(Gtk::ComboBoxText* option_menu, int order, int family)
 {
 #ifndef NDEBUG
-    std::cout << "FilterLinkFrame::set_family: order = " << order << ", family = " << family
+    std::cout << "filter_link_frame::set_family: order = " << order << ", family = " << family
               << std::endl;
 #endif
     switch (order)
