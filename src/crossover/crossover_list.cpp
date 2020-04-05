@@ -20,13 +20,13 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-CrossoverList::CrossoverList(const std::string& filename)
+crossover_list::crossover_list(const std::string& filename)
 {
     xmlDocPtr doc = xmlParseFile(filename.c_str());
 
     if (doc == nullptr)
     {
-        throw std::runtime_error(_("CrossoverList: Xml file not found"));
+        throw std::runtime_error(_("crossover_list: Xml file not found"));
     }
 
     xmlNodePtr node = xmlDocGetRootElement(doc);
@@ -52,11 +52,11 @@ CrossoverList::CrossoverList(const std::string& filename)
     }
     else
     {
-        throw std::runtime_error(_("CrossoverList: crossoverlist node not found"));
+        throw std::runtime_error(_("crossover_list: crossoverlist node not found"));
     }
 }
 
-void CrossoverList::to_xml(const std::string& filename)
+void crossover_list::to_xml(const std::string& filename)
 {
     xmlDocPtr doc = xmlNewDoc((xmlChar*)("1.0"));
 
@@ -70,11 +70,11 @@ void CrossoverList::to_xml(const std::string& filename)
 
     if (xmlSaveFile(filename.c_str(), doc) == -1)
     {
-        throw std::runtime_error(_("CrossoverList: Could not save to ") + filename);
+        throw std::runtime_error(_("crossover_list: Could not save to ") + filename);
     }
 }
 
-auto operator<<(std::ostream& output, const CrossoverList& crossover_list) -> std::ostream&
+auto operator<<(std::ostream& output, const crossover_list& crossover_list) -> std::ostream&
 {
     output << "Crossover List\n";
 

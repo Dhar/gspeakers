@@ -27,20 +27,20 @@
 
 /// This is a class that pretty much just contains a list of crossovers
 /// and xml output functionality
-class CrossoverList
+class crossover_list
 {
 public:
-    CrossoverList() = default;
+    crossover_list() = default;
 
     // Construct a part from an xml node
-    CrossoverList(const std::string& filename);
+    crossover_list(const std::string& filename);
 
     // Convert data for a part to an xml node, throws std::runtime_error on failure
     // Maybe this one should throw an exception?
     void to_xml(const std::string& filename);
 
     // Print part data to stdout
-    friend auto operator<<(std::ostream& o, const CrossoverList& crossover_list) -> std::ostream&;
+    friend auto operator<<(std::ostream& o, const crossover_list& crossover_list) -> std::ostream&;
 
     auto data() -> std::vector<Crossover>& { return m_data; }
 

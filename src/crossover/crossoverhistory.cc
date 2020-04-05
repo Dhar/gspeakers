@@ -51,7 +51,7 @@ CrossoverHistory::CrossoverHistory() : Gtk::Frame("")
 
     try
     {
-        m_crossover_list = CrossoverList(m_filename);
+        m_crossover_list = crossover_list(m_filename);
     }
     catch (std::runtime_error const& e)
     {
@@ -161,10 +161,10 @@ void CrossoverHistory::on_append_xml()
 
 void CrossoverHistory::open_xml(const std::string& filename)
 {
-    CrossoverList temp_crossover_list;
+    crossover_list temp_crossover_list;
     try
     {
-        temp_crossover_list = CrossoverList(filename);
+        temp_crossover_list = crossover_list(filename);
         m_refListStore->clear();
 
         m_filename = filename;
@@ -211,10 +211,10 @@ void CrossoverHistory::append_xml(const std::string& filename)
 #ifndef NDEBUG
     std::cout << "append xml ok: " << filename << std::endl;
 #endif
-    CrossoverList temp_crossover_list;
+    crossover_list temp_crossover_list;
     try
     {
-        temp_crossover_list = CrossoverList(filename);
+        temp_crossover_list = crossover_list(filename);
 
         std::for_each(temp_crossover_list.data().begin(),
                       temp_crossover_list.data().end(),

@@ -102,7 +102,7 @@ protected:
     Gtk::TreeView m_TreeView;
     Glib::RefPtr<Gtk::ListStore> m_refListStore;
 
-    CrossoverList m_crossover_list;
+    crossover_list m_crossover_list;
 
     std::string m_filename;
     bool new_xml_pressed;
