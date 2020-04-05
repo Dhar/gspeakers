@@ -17,14 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "plothistory.h"
+#include "plot_history.hpp"
 #include "plot.hpp"
 
 #include <cmath>
 #include <ctime>
 #include <iostream>
 
-PlotHistory::PlotHistory() : Gtk::Frame(""), m_vbox()
+plot_history::plot_history() : Gtk::Frame(""), m_vbox()
 {
     set_border_width(2);
     set_shadow_type(Gtk::SHADOW_NONE);
@@ -48,10 +48,10 @@ PlotHistory::PlotHistory() : Gtk::Frame(""), m_vbox()
     m_TreeView.set_rules_hint();
 
     Glib::RefPtr<Gtk::TreeSelection> selection = m_TreeView.get_selection();
-    selection->signal_changed().connect(sigc::mem_fun(*this, &PlotHistory::on_selection_changed));
+    selection->signal_changed().connect(sigc::mem_fun(*this, &plot_history::on_selection_changed));
 
-    signal_box_modified.connect(sigc::mem_fun(*this, &PlotHistory::on_box_modified));
-    signal_add_plot.connect(sigc::mem_fun(*this, &PlotHistory::on_add_plot));
+    signal_box_modified.connect(sigc::mem_fun(*this, &plot_history::on_box_modified));
+    signal_add_plot.connect(sigc::mem_fun(*this, &plot_history::on_add_plot));
 
     add_columns();
 
@@ -60,11 +60,11 @@ PlotHistory::PlotHistory() : Gtk::Frame(""), m_vbox()
     show_all();
 }
 
-PlotHistory::~PlotHistory() = default;
+plot_history::~plot_history() = default;
 
-auto PlotHistory::on_delete_event(GdkEventAny* event) -> bool { return true; }
+auto plot_history::on_delete_event(GdkEventAny* event) -> bool { return true; }
 
-void PlotHistory::on_selection_changed()
+void plot_history::on_selection_changed()
 {
     Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
 
@@ -81,7 +81,7 @@ void PlotHistory::on_selection_changed()
     }
 }
 
-void PlotHistory::on_remove()
+void plot_history::on_remove()
 {
     Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
 
@@ -112,9 +112,9 @@ void PlotHistory::on_remove()
     }
 }
 
-void PlotHistory::on_box_modified(Box*) {}
+void plot_history::on_box_modified(Box*) {}
 
-void PlotHistory::on_add_plot(Box* b, Speaker* s, Gdk::Color& color)
+void plot_history::on_add_plot(Box* b, Speaker* s, Gdk::Color& color)
 {
     if (b != nullptr && s != nullptr)
     {
@@ -127,10 +127,10 @@ void PlotHistory::on_add_plot(Box* b, Speaker* s, Gdk::Color& color)
     ++m_nof_plots;
 }
 
-void PlotHistory::on_cell_plot_toggled(const Glib::ustring& path_string)
+void plot_history::on_cell_plot_toggled(const Glib::ustring& path_string)
 {
 #ifndef NDEBUG
-    std::cout << "PlotHistory: toggle plot" << std::endl;
+    std::cout << "plot_history: toggle plot" << std::endl;
 #endif
 
     Gtk::TreePath path(path_string);
@@ -152,9 +152,9 @@ void PlotHistory::on_cell_plot_toggled(const Glib::ustring& path_string)
     row[m_columns.view_plot] = view_plot;
 }
 
-void PlotHistory::create_model() { m_refListStore = Gtk::ListStore::create(m_columns); }
+void plot_history::create_model() { m_refListStore = Gtk::ListStore::create(m_columns); }
 
-void PlotHistory::add_columns()
+void plot_history::add_columns()
 {
     {
         auto pRenderer = Gtk::manage(new Gtk::CellRendererText());
@@ -169,7 +169,7 @@ void PlotHistory::add_columns()
     }
     {
         auto pRenderer = Gtk::manage(new Gtk::CellRendererToggle());
-        pRenderer->signal_toggled().connect(sigc::mem_fun(*this, &PlotHistory::on_cell_plot_toggled));
+        pRenderer->signal_toggled().connect(sigc::mem_fun(*this, &plot_history::on_cell_plot_toggled));
 
         int cols_count = m_TreeView.append_column(_("Plot"), *pRenderer);
         Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
@@ -199,7 +199,7 @@ void PlotHistory::add_columns()
         Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
 
         pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &PlotHistory::type_cell_data_func));
+                                    sigc::mem_fun(*this, &plot_history::type_cell_data_func));
     }
     {
         auto pRenderer = Gtk::manage(new Gtk::CellRendererText());
@@ -208,7 +208,7 @@ void PlotHistory::add_columns()
         Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
 
         pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &PlotHistory::vb1_cell_data_func));
+                                    sigc::mem_fun(*this, &plot_history::vb1_cell_data_func));
     }
     {
         auto pRenderer = Gtk::manage(new Gtk::CellRendererText());
@@ -217,11 +217,11 @@ void PlotHistory::add_columns()
         Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
 
         pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &PlotHistory::fb1_cell_data_func));
+                                    sigc::mem_fun(*this, &plot_history::fb1_cell_data_func));
     }
 }
 
-void PlotHistory::type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
+void plot_history::type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
 {
     auto& renderer = dynamic_cast<Gtk::CellRendererText&>(*cell);
     switch ((*iter)[m_columns.type])
@@ -238,21 +238,21 @@ void PlotHistory::type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeMo
     }
 }
 
-void PlotHistory::vb1_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
+void plot_history::vb1_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
 {
     auto& renderer = dynamic_cast<Gtk::CellRendererText&>(*cell);
     renderer.property_text() = GSpeakers::double_to_ustring((*iter)[m_columns.vb1], 2, 1) + " l";
     renderer.property_xalign() = 1.0;
 }
 
-void PlotHistory::fb1_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
+void plot_history::fb1_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
 {
     auto& renderer = dynamic_cast<Gtk::CellRendererText&>(*cell);
     renderer.property_text() = GSpeakers::double_to_ustring((*iter)[m_columns.fb1], 2, 1) + " Hz";
     renderer.property_xalign() = 1.0;
 }
 
-void PlotHistory::add_item(Box const& box, Speaker const& spk, Gdk::Color& color)
+void plot_history::add_item(Box const& box, Speaker const& spk, Gdk::Color& color)
 {
     gushort r = (int)((color.get_red_p()) * 255);
     gushort g = (int)((color.get_green_p()) * 255);
