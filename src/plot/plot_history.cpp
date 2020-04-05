@@ -130,7 +130,7 @@ void plot_history::on_add_plot(Box* b, Speaker* s, Gdk::Color& color)
 void plot_history::on_cell_plot_toggled(const Glib::ustring& path_string)
 {
 #ifndef NDEBUG
-    std::cout << "plot_history: toggle plot" << std::endl;
+    std::puts("plot_history: toggle plot");
 #endif
 
     Gtk::TreePath path(path_string);
