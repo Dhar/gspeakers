@@ -856,16 +856,11 @@ void FilterLinkFrame::on_plot_crossover()
             enable_edit = false;
             if ((m_net->get_type() & NET_TYPE_LOWPASS) != 0)
             {
-                // TODO Use std::find_if
-                int i = 0, index1 = 0;
-                for (auto& point : points)
-                {
-                    if (point.get_y() > (-3 - m_damp_spinbutton.get_value()))
-                    {
-                        index1 = i;
-                    }
-                    i++;
-                }
+                auto const location = std::find_if(begin(points), end(points), [&](auto const& point) {
+                    return point.get_y() > (-3 - m_damp_spinbutton.get_value());
+                });
+                auto const index1 = std::distance(begin(points), location);
+
                 points[index1 + 1].set_y(points[index1 + 1].get_y() + m_damp_spinbutton.get_value());
                 points[index1].set_y(points[index1].get_y() + m_damp_spinbutton.get_value());
 
@@ -877,21 +872,11 @@ void FilterLinkFrame::on_plot_crossover()
             }
             if ((m_net->get_type() & NET_TYPE_HIGHPASS) != 0)
             {
-                bool done = false;
-                int i = 0, index2 = 0;
-                for (auto& point : points)
-                {
-                    if ((point.get_y() < (-3 - m_damp_spinbutton.get_value())) && (!done))
-                    {
-                        index2 = i;
-                    }
-                    else
-                    {
-                        done = true;
-                    }
-                    i++;
-                }
-                index2++;
+                auto position = std::find_if(begin(points), end(points), [&](auto const& point) {
+                    return point.get_y() >= -3 - m_damp_spinbutton.get_value();
+                });
+                auto const index2 = std::distance(begin(points), position);
+
                 points[index2 - 1].set_y(points[index2 - 1].get_y() + m_damp_spinbutton.get_value());
                 points[index2].set_y(points[index2].get_y() + m_damp_spinbutton.get_value());
 
