@@ -96,7 +96,8 @@ extern sigc::signal0<void> signal_net_modified_by_wizard; // listen to this in c
 extern sigc::signal1<void, Net*> signal_net_modified_by_user; // listan to this in filter wizard
 extern sigc::signal1<void, int> signal_new_crossover;
 extern sigc::signal0<void> signal_plot_crossover;
-extern sigc::signal4<int, std::vector<GSpeakers::Point>&, Gdk::Color&, int*, Net*> signal_add_crossover_plot;
+extern sigc::signal4<int, std::vector<GSpeakers::Point> const&, Gdk::Color const&, int&, Net*>
+    signal_add_crossover_plot;
 extern sigc::signal0<void> signal_save_open_files;
 
 #endif //__GFILTER_COMMON_H
