@@ -54,20 +54,22 @@ protected:
 
     void on_plot_crossover();
 
+    void on_plot_notebook_switch_page(Gtk::Widget* page, guint page_num);
+
     void on_new_crossover_menu_action(int);
 
-    void set_save_state(bool b);
+    void set_save_state(bool save_state);
 
 private:
     Gtk::Notebook m_crossover_notebook;
     Gtk::Notebook m_plot_notebook;
 
     crossover_wizard m_crossover_wizard;
-    CrossoverTreeView crossover_treeview;
-    CrossoverHistory crossover_history;
-    GSpeakersFilterPlot filter_plot;
-    TotalFilterPlot total_filter_plot;
-    SummedFreqRespPlot summed_freq_resp_plot;
+    CrossoverTreeView m_crossover_treeview;
+    CrossoverHistory m_crossover_history;
+    GSpeakersFilterPlot m_filter_plot;
+    TotalFilterPlot m_total_filter_plot;
+    SummedFreqRespPlot m_summed_freq_resp_plot;
     crossover_image_view m_crossover_image_view;
 
     Gtk::MenuItem m_menu_item;
