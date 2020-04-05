@@ -20,7 +20,7 @@
 #pragma once
 
 #include "common.h"
-#include "crossoverlist.h"
+#include "crossover_list.hpp"
 
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/filechooserdialog.h>
