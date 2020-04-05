@@ -857,7 +857,8 @@ void FilterLinkFrame::on_plot_crossover()
                 double ydiff = points[index1 + 1].get_y() - points[index1].get_y();
                 int xdiff = points[index1 + 1].get_x() - points[index1].get_x();
                 double ytodbdiff = points[index1].get_y() + 3;
-                m_lower_co_freq_spinbutton->set_value((ytodbdiff / ydiff) * xdiff
+
+                m_lower_co_freq_spinbutton->set_value(ytodbdiff / ydiff * xdiff
                                                       + points[index1 + 1].get_x());
             }
             if ((m_net->get_type() & NET_TYPE_HIGHPASS) != 0)
