@@ -22,7 +22,7 @@
 
 #include "enclosure_list.hpp"
 #include "common.h"
-#include "gspeakerscolor.h"
+#include "color_palette.hpp"
 #include "speaker_list.hpp"
 
 #include <gdkmm/event.h>
@@ -127,7 +127,7 @@ protected:
     enclosure_list m_box_list;
     speaker_list m_speaker_list;
 
-    GSpeakersColor m_color_list;
+    color_palette m_color_list;
 
     model_columns m_columns;
 

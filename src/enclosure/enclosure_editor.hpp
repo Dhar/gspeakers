@@ -21,7 +21,7 @@
 #define __GSPEAKERS_BOXEDITOR
 
 #include "enclosure.hpp"
-#include "gspeakerscolor.h"
+#include "color_palette.hpp"
 #include "speaker_list.hpp"
 
 #include <gtkmm/box.h>
@@ -80,7 +80,7 @@ private:
     Box* m_box = nullptr;
     speaker_list* m_speaker_list;
     Speaker m_current_speaker;
-    GSpeakersColor m_color_list;
+    color_palette m_color_list;
     bool m_disable_signals{false};
     bool speaker_list_is_loaded{false};
 };
