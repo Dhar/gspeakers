@@ -57,12 +57,10 @@ constexpr auto NET_LINEARPHASE = 7;
 class Net : public GSpeakersObject
 {
 public:
-    /*
-     * Construct new net object
-     * type = NET_TYPE_LOWPASS                        // lowpass filter
-     * type = NET_TYPE_HIGHPASS                       // highpass filter
-     * type = NET_TYPE_LOWPASS | NET_TYPE_HIGHPASS    // bandpass filter
-     */
+    /// Construct new net object
+    /// type = NET_TYPE_LOWPASS                        (lowpass filter)
+    /// type = NET_TYPE_HIGHPASS                       (highpass filter)
+    /// type = NET_TYPE_LOWPASS | NET_TYPE_HIGHPASS    (bandpass filter)
     Net(int type = NET_TYPE_LOWPASS,
         int lowpass_order = NET_ORDER_1ST,
         int highpass_order = NET_NOT_PRESENT,
@@ -85,10 +83,9 @@ public:
 
     std::string to_SPICE(Speaker& s, bool use_gnucap = false);
 
-    /// Use this to add a component to the net
-    std::vector<passive_component>& parts() { return m_parts; }
-    /// Use this to get the parts
-    std::vector<passive_component> const& parts() const { return m_parts; }
+    auto parts() -> std::vector<passive_component>& { return m_parts; }
+
+    auto parts() const -> std::vector<passive_component> const& { return m_parts; }
 
     int get_highpass_order() const { return m_highpass_order; }
 
@@ -110,29 +107,19 @@ public:
 
     bool get_inv_pot() const { return m_inv_pol; }
 
-    /*
-     * We return parts by ref to so that we not copy these parts.
-     * For example, if we have:
-     * Net n = net;
-     * n.get_imp_corr_R().set_value(0.2);
-     *
-     * we don't access the part stored in n, we get a copy of that
-     * part that we modify, but if we return a ref we modify the
-     * part stored in Net
-     */
-    passive_component& get_imp_corr_R() { return m_imp_corr_R; }
+    auto get_imp_corr_R() -> passive_component& { return m_imp_corr_R; }
 
-    passive_component& get_imp_corr_C() { return m_imp_corr_C; }
+    auto get_imp_corr_C() -> passive_component& { return m_imp_corr_C; }
 
-    passive_component& get_damp_R1() { return m_damp_R1; }
+    auto get_damp_R1() -> passive_component& { return m_damp_R1; }
 
-    passive_component& get_damp_R2() { return m_damp_R2; }
+    auto get_damp_R2() -> passive_component& { return m_damp_R2; }
 
-    passive_component& get_res_R() { return m_res_R; }
+    auto get_res_R() -> passive_component& { return m_res_R; }
 
-    passive_component& get_res_C() { return m_res_C; }
+    auto get_res_C() -> passive_component& { return m_res_C; }
 
-    passive_component& get_res_L() { return m_res_L; }
+    auto get_res_L() -> passive_component& { return m_res_L; }
 
     void set_highpass_order(int order);
     void set_lowpass_order(int order);
