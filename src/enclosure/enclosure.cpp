@@ -28,7 +28,7 @@
 using namespace gspk;
 
 Box::Box(std::string id_string, int type, double vb1, double fb1, double vb2, double fb2, std::string speaker)
-    : GSpeakersObject(),
+    : GSpeakersObject(type),
       m_id_string(std::move(id_string)),
       m_vb1(vb1),
       m_fb1(fb1),
@@ -36,7 +36,6 @@ Box::Box(std::string id_string, int type, double vb1, double fb1, double vb2, do
       m_fb2(fb2),
       m_speaker(std::move(speaker))
 {
-    m_type = type;
 }
 
 Box::Box(xmlNodePtr parent) : GSpeakersObject()
