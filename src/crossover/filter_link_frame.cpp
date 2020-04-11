@@ -34,6 +34,7 @@ filter_link_frame::filter_link_frame(Net* net,
                                      const std::string& description,
                                      speaker_list* speaker_list)
     : Gtk::Frame(""),
+      m_vbox(Gtk::ORIENTATION_VERTICAL),
       m_lower_co_freq_digits(Gtk::Adjustment::create(2000, 1, 20000, 1, 100)),
       m_higher_co_freq_digits(Gtk::Adjustment::create(2000, 1, 20000, 1, 100)),
       m_inv_pol_checkbutton(_("Invert polarity"), false),
@@ -151,7 +152,7 @@ void filter_link_frame::initialise_highpass_filter()
     }
 
     m_vbox.pack_start(*frame);
-    Gtk::VBox* vbox = Gtk::manage(new Gtk::VBox());
+    Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     vbox->set_border_width(12);
     frame->add(*vbox);
 
@@ -201,7 +202,7 @@ void filter_link_frame::initialise_lowpass_filter()
         frame->set_label_widget(*label);
     }
 
-    Gtk::VBox* vbox = Gtk::manage(new Gtk::VBox());
+    Gtk::Box* vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
     vbox->set_border_width(12);
     frame->add(*vbox);
 

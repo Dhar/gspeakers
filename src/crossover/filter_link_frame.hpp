@@ -70,7 +70,7 @@ private:
 
 private:
     Gtk::Label m_label;
-    Gtk::VBox m_vbox;
+    Gtk::Box m_vbox;
     Gtk::ComboBoxText m_speaker_combo;
 
     /* For lowpass filter */
