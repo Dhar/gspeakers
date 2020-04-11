@@ -555,9 +555,9 @@ void speaker_editor::on_selection_changed()
             m_CmsEntry.set_text(Glib::ustring(buffer->str));
 
             // Check buttons
-            m_BassCheckButton.set_active(speaker.get_type() == SPEAKER_TYPE_BASS);
-            m_MidrangeCheckButton.set_active(speaker.get_type() == SPEAKER_TYPE_MIDRANGE);
-            m_TweeterCheckButton.set_active(speaker.get_type() == SPEAKER_TYPE_TWEETER);
+            m_BassCheckButton.set_active(speaker.get_type() & SPEAKER_TYPE_BASS);
+            m_MidrangeCheckButton.set_active(speaker.get_type() & SPEAKER_TYPE_MIDRANGE);
+            m_TweeterCheckButton.set_active(speaker.get_type() & SPEAKER_TYPE_TWEETER);
 
             m_FreqRespFileEntry.set_text(speaker.get_freq_resp_filename());
 
@@ -1228,12 +1228,13 @@ void speaker_editor::add_columns()
 void speaker_editor::type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::TreeModel::iterator& iter)
 {
     auto& renderer = dynamic_cast<Gtk::CellRendererText&>(*cell);
+
     std::string s;
-    if ((*iter)[m_columns.type] == SPEAKER_TYPE_BASS)
+    if ((*iter)[m_columns.type] & SPEAKER_TYPE_BASS)
     {
         s = _("Woofer");
     }
-    if ((*iter)[m_columns.type] == SPEAKER_TYPE_MIDRANGE)
+    if ((*iter)[m_columns.type] & SPEAKER_TYPE_MIDRANGE)
     {
         if (!s.empty())
         {
@@ -1244,7 +1245,7 @@ void speaker_editor::type_cell_data_func(Gtk::CellRenderer* cell, const Gtk::Tre
             s = _("Midrange");
         }
     }
-    if ((*iter)[m_columns.type] == SPEAKER_TYPE_TWEETER)
+    if ((*iter)[m_columns.type] & SPEAKER_TYPE_TWEETER)
     {
         if (!s.empty())
         {
