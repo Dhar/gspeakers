@@ -40,12 +40,10 @@ Box::Box(std::string id_string, int type, double vb1, double fb1, double vb2, do
 
 Box::Box(xmlNodePtr parent) : GSpeakersObject()
 {
-    if (parent != nullptr && std::string((char*)parent->name) == "box")
+    if (parent != nullptr && std::string(reinterpret_cast<char const*>(parent->name)) == "box")
     {
         try
         {
-            // parse_id_string(parent->children);
-
             auto node = parent->children;
 
             m_id_string = parse_string(node, "id_string");
