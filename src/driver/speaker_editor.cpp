@@ -44,9 +44,9 @@ constexpr auto FILE_CHOOSER_SAVE = 10003;
 
 speaker_editor::speaker_editor()
     : m_TreeViewTable(10, 4, true),
-      m_EditFreqRespButton(_("Edit...")),
+      m_EditFreqRespButton(_("Edit")),
       m_BrowseFreqRespButton(_("...")),
-      m_BassCheckButton(_("Bass")),
+      m_BassCheckButton(_("Woofer")),
       m_MidrangeCheckButton(_("Midrange")),
       m_TweeterCheckButton(_("Tweeter")),
       m_vbox(Gtk::ORIENTATION_VERTICAL),
@@ -70,10 +70,10 @@ speaker_editor::speaker_editor()
         m_speaker_list = std::make_unique<speaker_list>(m_filename);
         signal_speakerlist_loaded(m_speaker_list.get());
     }
-    catch (std::runtime_error const& e)
+    catch (std::runtime_error const& error)
     {
         m_speaker_list = std::make_unique<speaker_list>();
-        std::cout << "speaker_editor::speaker_editor: " << e.what() << std::endl;
+        std::cout << "speaker_editor::speaker_editor: " << error.what() << std::endl;
     }
 
     m_treeview_vbox.set_border_width(5);
@@ -111,7 +111,7 @@ speaker_editor::speaker_editor()
     m_TreeViewTable.set_spacings(2);
     m_TreeViewTable.attach(m_ScrolledWindow, 0, 4, 0, 10);
 
-    // All the entries
+    // All the entries on the left hand side ready for user input
     m_grid.attach(*Gtk::manage(new Gtk::Label(_("Name:"), Gtk::ALIGN_START)), 0, 0);
     m_grid.attach(m_IdStringEntry, 1, 0);
     m_grid.attach(*Gtk::manage(new Gtk::Label(_("Qts:"), Gtk::ALIGN_START)), 0, 1);
@@ -151,11 +151,9 @@ speaker_editor::speaker_editor()
     m_grid.attach(m_MidrangeCheckButton, 0, 16);
     m_grid.attach(m_TweeterCheckButton, 0, 17);
 
-    m_BassCheckButton.set_tooltip_text(_("Check this box if the driver will work as a woofer (bass "
-                                         "speaker)"));
-    m_MidrangeCheckButton.set_tooltip_text(_("Check this box if the driver will work as a midrange "
-                                             "speaker"));
-    m_TweeterCheckButton.set_tooltip_text(_("Check this box if the driver will work as a tweeter"));
+    m_BassCheckButton.set_tooltip_text(_("Check if a woofer"));
+    m_MidrangeCheckButton.set_tooltip_text(_("Check if a midrange driver"));
+    m_TweeterCheckButton.set_tooltip_text(_("Check if a tweeter"));
     m_IdStringEntry.set_tooltip_text(_("The name or identification string for the driver"));
 
     auto hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
@@ -342,12 +340,9 @@ void speaker_editor::on_settings_changed(const std::string& setting)
         m_toolbar->set_toolbar_style(
             static_cast<Gtk::ToolbarStyle>(g_settings.getValueUnsignedInt("ToolbarStyle")));
     }
-    if (setting == "DrawDriverImpPlot" || setting == "DrawDriverFreqRespPlot")
+    if ((setting == "DrawDriverImpPlot" || setting == "DrawDriverFreqRespPlot") && index != -1)
     {
-        if (index != -1)
-        {
-            on_selection_changed();
-        }
+        on_selection_changed();
     }
 }
 
@@ -396,11 +391,11 @@ void speaker_editor::on_new()
     add_item(speaker);
     m_speaker_list->data().push_back(speaker);
 
-    Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
+    auto selection = m_TreeView.get_selection();
 
     Gtk::TreePath path(std::to_string(m_speaker_list->data().size() - 1));
     Gtk::TreeRow row = *(m_refListStore->get_iter(path));
-    refSelection->select(row);
+    selection->select(row);
 
     m_IdStringEntry.grab_focus();
 
@@ -430,9 +425,9 @@ void speaker_editor::on_new_xml()
 
 void speaker_editor::on_remove()
 {
-    Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
+    auto selection = m_TreeView.get_selection();
 
-    if (const Gtk::TreeIter iter = refSelection->get_selected())
+    if (Gtk::TreeIter const iter = selection->get_selected())
     {
         Gtk::TreePath path = m_refListStore->get_path(iter);
 
@@ -441,8 +436,8 @@ void speaker_editor::on_remove()
             // Remove item from ListStore:
             m_refListStore->erase(iter);
 
-            if (index < (int)m_speaker_list->data().size())
-                m_speaker_list->data().erase(m_speaker_list->data().begin() + index);
+            if (index < static_cast<int>(m_speaker_list->data().size()))
+                m_speaker_list->data().erase(begin(m_speaker_list->data()) + index);
         }
     }
     // m_menu.items()[MENU_INDEX_DELETE].set_sensitive(false);
@@ -507,11 +502,11 @@ void speaker_editor::save_as(const std::string& filename)
 
 void speaker_editor::on_selection_changed()
 {
-    Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
+    auto selection = m_TreeView.get_selection();
 
     updating_entries = true;
 
-    if (const Gtk::TreeIter iter = refSelection->get_selected())
+    if (const Gtk::TreeIter iter = selection->get_selected())
     {
         Gtk::TreePath path = m_refListStore->get_path(iter);
 
@@ -814,9 +809,9 @@ void speaker_editor::on_entry_changed(int i)
     }
 
     // This treeview stuff is kind of weird...
-    Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
+    auto selection = m_TreeView.get_selection();
 
-    if (Gtk::TreeIter iter = refSelection->get_selected())
+    if (Gtk::TreeIter iter = selection->get_selected())
     {
         Gtk::TreePath path = m_refListStore->get_path(iter);
         Gtk::TreeRow row = *(m_refListStore->get_iter(path));
@@ -850,14 +845,20 @@ void speaker_editor::on_entry_changed(int i)
             case 4:
                 d = std::atof(m_RdcEntry.get_text().c_str());
                 row[m_columns.rdc] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_rdc(d);
                 update_imp_plot = true;
                 break;
             case 5:
                 d = std::atof(m_LvcEntry.get_text().c_str());
                 row[m_columns.lvc] = d;
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_lvc(d);
                 break;
                 update_imp_plot = true;
@@ -924,35 +925,50 @@ void speaker_editor::on_entry_changed(int i)
             case 13:
                 d = std::atof(m_MmdEntry.get_text().c_str());
                 row[m_columns.mmd] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_mmd(d);
                 update_imp_plot = true;
                 break;
             case 14:
                 d = std::atof(m_AdEntry.get_text().c_str());
                 row[m_columns.ad] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_ad(d);
                 update_imp_plot = true;
                 break;
             case 15:
                 d = std::atof(m_BlEntry.get_text().c_str());
                 row[m_columns.bl] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_bl(d);
                 update_imp_plot = true;
                 break;
             case 16:
                 d = std::atof(m_RmsEntry.get_text().c_str());
                 row[m_columns.rms] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_rms(d);
                 update_imp_plot = true;
                 break;
             case 17:
                 d = std::atof(m_CmsEntry.get_text().c_str());
                 row[m_columns.cms] = d; // the treestore
-                if (d == 0.0) d = 1.0;
+                if (d == 0.0)
+                {
+                    d = 1.0;
+                }
                 m_speaker_list->data()[index].set_cms(d);
                 update_imp_plot = true;
                 break;
@@ -1035,8 +1051,8 @@ auto speaker_editor::open_xml(const std::string& filename) -> bool
                                   + GSpeakers::short_filename(m_filename, 40) + "]</b>");
         m_evbox->set_tooltip_text(m_filename);
 
-        std::for_each(temp_speaker_list.data().begin(),
-                      temp_speaker_list.data().end(),
+        std::for_each(begin(temp_speaker_list.data()),
+                      end(temp_speaker_list.data()),
                       sigc::mem_fun(*this, &speaker_editor::add_item));
 
         m_speaker_list->data().clear();
@@ -1047,10 +1063,10 @@ auto speaker_editor::open_xml(const std::string& filename) -> bool
         // Select the first item in the list
         if (!m_speaker_list->data().empty())
         {
-            Glib::RefPtr<Gtk::TreeSelection> refSelection = m_TreeView.get_selection();
+            auto selection = m_TreeView.get_selection();
 
             Gtk::TreeRow row = *(m_refListStore->get_iter(Gtk::TreePath(std::to_string(0))));
-            refSelection->select(row);
+            selection->select(row);
         }
         m_IdStringEntry.grab_focus();
         set_entries_sensitive(true);
@@ -1162,66 +1178,66 @@ void speaker_editor::add_item(Speaker const& spk)
 void speaker_editor::add_columns()
 {
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        auto const column_count = m_TreeView.append_column(_("Identifier"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(column_count - 1);
+        auto const column_count = m_TreeView.append_column(_("Identifier"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(column_count - 1);
 
-        pColumn->add_attribute(pRenderer->property_text(), m_columns.id_string);
+        column->add_attribute(renderer->property_text(), m_columns.id_string);
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Type"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Type"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::type_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::type_cell_data_func));
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Qts"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Qts"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::qts_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::qts_cell_data_func));
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Fs"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Fs"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::fs_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::fs_cell_data_func));
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Vas"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Vas"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::vas_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::vas_cell_data_func));
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Impedance"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Impedance"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::imp_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::imp_cell_data_func));
     }
     {
-        Gtk::CellRendererText* pRenderer = Gtk::manage(new Gtk::CellRendererText());
+        Gtk::CellRendererText* renderer = Gtk::manage(new Gtk::CellRendererText());
 
-        int cols_count = m_TreeView.append_column(_("Sensitivity"), *pRenderer);
-        Gtk::TreeViewColumn* pColumn = m_TreeView.get_column(cols_count - 1);
+        int cols_count = m_TreeView.append_column(_("Sensitivity"), *renderer);
+        Gtk::TreeViewColumn* column = m_TreeView.get_column(cols_count - 1);
 
-        pColumn->set_cell_data_func(*pRenderer,
-                                    sigc::mem_fun(*this, &speaker_editor::sens_cell_data_func));
+        column->set_cell_data_func(*renderer,
+                                   sigc::mem_fun(*this, &speaker_editor::sens_cell_data_func));
     }
 }
 
