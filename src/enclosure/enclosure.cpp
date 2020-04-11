@@ -25,7 +25,7 @@
 #include <sstream>
 #include <utility>
 
-using namespace spkrd;
+using namespace gspk;
 
 Box::Box(std::string id_string, int type, double vb1, double fb1, double vb2, double fb2, std::string speaker)
     : GSpeakersObject(),

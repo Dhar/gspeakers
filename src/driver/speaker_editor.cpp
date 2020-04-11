@@ -574,7 +574,7 @@ void speaker_editor::on_selection_changed()
                     throw std::runtime_error("Could not open " + s.get_freq_resp_filename());
                 }
 
-                std::vector<GSpeakers::Point> points;
+                std::vector<gspk::point> points;
 
                 while (input_file)
                 {
@@ -614,7 +614,7 @@ void speaker_editor::draw_impedance_plot(Speaker const& s, bool update)
 
     if (g_settings.getValueBool("DrawDriverImpPlot"))
     {
-        std::vector<GSpeakers::Point> points;
+        std::vector<gspk::point> points;
         // Produce SPICE input-file
 #ifdef TARGET_WIN32
         std::string tmp_file = Glib::get_tmp_dir() + "\\speaker" + std::to_string(s.get_id())

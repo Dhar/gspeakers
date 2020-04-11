@@ -51,12 +51,12 @@ frequency_response_plot::frequency_response_plot()
 
 frequency_response_plot::~frequency_response_plot() = default;
 
-auto lerp(std::vector<GSpeakers::Point> const& freq_resp_points, double x) -> double
+auto lerp(std::vector<gspk::point> const& freq_resp_points, double x) -> double
 {
     auto first_i = std::lower_bound(freq_resp_points.begin(),
                                     freq_resp_points.end(),
                                     x,
-                                    GSpeakers::comparison{});
+                                    gspk::comparison{});
 
     if (first_i != begin(freq_resp_points))
     {
@@ -66,7 +66,7 @@ auto lerp(std::vector<GSpeakers::Point> const& freq_resp_points, double x) -> do
     auto second_i = std::upper_bound(begin(freq_resp_points),
                                      end(freq_resp_points),
                                      x,
-                                     GSpeakers::comparison{});
+                                     gspk::comparison{});
 
     double x0 = first_i->get_x();
     double x1 = second_i->get_x();
@@ -82,7 +82,7 @@ auto lerp(std::vector<GSpeakers::Point> const& freq_resp_points, double x) -> do
     return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
 }
 
-auto frequency_response_plot::on_add_plot(std::vector<GSpeakers::Point> const& filter_points,
+auto frequency_response_plot::on_add_plot(std::vector<gspk::point> const& filter_points,
                                           Gdk::Color const& color,
                                           int& output_plot_index,
                                           Net* n) -> int
@@ -99,7 +99,7 @@ auto frequency_response_plot::on_add_plot(std::vector<GSpeakers::Point> const& f
         s = m_speakerlist->get_speaker_by_id_string(n->get_speaker());
     }
 
-    std::vector<GSpeakers::Point> freq_resp_points;
+    std::vector<gspk::point> freq_resp_points;
 
     if (!s.get_freq_resp_filename().empty())
     {
@@ -135,7 +135,7 @@ auto frequency_response_plot::on_add_plot(std::vector<GSpeakers::Point> const& f
         freq_resp_points.emplace_back(20000, 0);
     }
 
-    std::vector<GSpeakers::Point> points;
+    std::vector<gspk::point> points;
 
     for (auto const& filter_point : filter_points)
     {
@@ -166,7 +166,7 @@ auto frequency_response_plot::on_add_plot(std::vector<GSpeakers::Point> const& f
 
     m_plot.remove_all_plots();
 
-    std::vector<GSpeakers::Point> pnts;
+    std::vector<gspk::point> pnts;
 
     if (!m_points.empty())
     {
