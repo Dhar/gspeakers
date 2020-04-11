@@ -282,11 +282,6 @@ void enclosure_editor::on_box_selected(Box* b)
     }
     else
     {
-        // Maybe we don't really need this one
-        if (b != nullptr)
-        {
-            delete b;
-        }
         b = new Box();
     }
     m_disable_signals = false;
