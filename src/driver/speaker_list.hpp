@@ -15,8 +15,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GFILTER_SPEAKERLIST
-#define __GFILTER_SPEAKERLIST
+#pragma once
 
 #include "gspeakersobject.h"
 #include "speaker.h"
@@ -52,5 +51,3 @@ public:
 protected:
     std::vector<Speaker> m_speaker_list;
 };
-
-#endif
