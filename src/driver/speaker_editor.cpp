@@ -174,14 +174,17 @@ speaker_editor::speaker_editor()
     m_MidrangeCheckButton.set_tooltip_text(_("Check if a midrange driver"));
     m_TweeterCheckButton.set_tooltip_text(_("Check if a tweeter"));
 
-    auto hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
-    hbox->pack_start(*Gtk::make_managed<Gtk::Label>(_("Frequency response file:"), Gtk::ALIGN_START));
-    hbox->pack_start(m_FreqRespFileEntry);
-    m_FreqRespFileEntry.set_width_chars(15);
-    hbox->pack_start(m_BrowseFreqRespButton);
-    hbox->pack_start(m_EditFreqRespButton);
-    hbox->set_spacing(12);
-    m_grid.attach(*hbox, 0, 18, 2, 1);
+    {
+        auto hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+        hbox->pack_start(
+            *Gtk::make_managed<Gtk::Label>(_("Frequency response file:"), Gtk::ALIGN_START));
+        hbox->pack_start(m_FreqRespFileEntry);
+        m_FreqRespFileEntry.set_width_chars(15);
+        hbox->pack_start(m_BrowseFreqRespButton);
+        hbox->pack_start(m_EditFreqRespButton);
+        hbox->set_spacing(12);
+        m_grid.attach(*hbox, 0, 18, 2, 1);
+    }
 
     m_ScrolledWindow.set_shadow_type(Gtk::SHADOW_ETCHED_IN);
     m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
