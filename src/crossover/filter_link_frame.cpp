@@ -344,358 +344,330 @@ void filter_link_frame::on_settings_changed(const std::string& setting)
 
 void filter_link_frame::on_param_changed()
 {
-    if (enable_edit)
+    std::puts("filter_link_frame::on_param_changed");
+
+    if (!enable_edit || m_speaker_list == nullptr)
     {
-        std::puts("filter_link_frame::on_param_changed");
-
-        enable_edit = false;
-
-        Speaker speaker;
-
-        if (m_speaker_list != nullptr)
-        {
-            speaker = m_speaker_list->get_speaker_by_id_string(m_speaker_combo.get_active_text());
-        }
-        m_net->set_speaker(speaker.get_id_string());
-
-        int index = 0;
-        std::vector<double> num_params;
-
-        if (m_net->get_type() == NET_TYPE_LOWPASS)
-        {
-            m_net->set_lowpass_order(m_lower_order_combo->get_active_row_number() + 1);
-            double const cutoff = m_lower_co_freq_spinbutton->get_value();
-
-            switch (m_net->get_lowpass_order())
-            {
-                case NET_ORDER_1ST:
-                    num_params = get_filter_params(NET_BUTTERWORTH, NET_ORDER_1ST, NET_TYPE_LOWPASS);
-                    m_net->parts()[index].set_value((speaker.get_rdc() / (num_params[0] * cutoff))
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    m_net->set_lowpass_family(NET_BUTTERWORTH);
-                    break;
-                case NET_ORDER_2ND:
-                    switch (m_lower_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL, NET_ORDER_2ND, NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BUTTERWORTH);
-                            break;
-                        case 2: // chebychev
-                            num_params = get_filter_params(NET_CHEBYCHEV,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_CHEBYCHEV);
-                            break;
-                        case 3: // linkwitz-riley
-                            num_params = get_filter_params(NET_LINKWITZRILEY,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_LINKWITZRILEY);
-                            break;
-                    }
-                    /* inductor */
-                    m_net->parts()[index].set_value(speaker.get_rdc() * num_params[0] / cutoff * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value(num_params[1] / (speaker.get_rdc() * cutoff)
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    break;
-                case NET_ORDER_3RD:
-                    switch (m_lower_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL, NET_ORDER_3RD, NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_3RD,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BUTTERWORTH);
-                            break;
-                    }
-                    /* inductor */
-                    m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[0]) / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value((num_params[1] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    /* inductor */
-                    m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[2]) / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    break;
-                case NET_ORDER_4TH:
-                    switch (m_lower_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL, NET_ORDER_4TH, NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_BUTTERWORTH);
-                            break;
-                        case 2: // gaussian
-                            num_params = get_filter_params(NET_GAUSSIAN,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_GAUSSIAN);
-                            break;
-                        case 3: // legendre
-                            num_params = get_filter_params(NET_LEGENDRE,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_LEGENDRE);
-                            break;
-                        case 4: // liner-phase
-                            num_params = get_filter_params(NET_LINEARPHASE,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_LINEARPHASE);
-                            break;
-                        case 5: // linkwitz-riley
-                            num_params = get_filter_params(NET_LINKWITZRILEY,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_LOWPASS);
-                            m_net->set_lowpass_family(NET_LINKWITZRILEY);
-                            break;
-                    }
-                    // inductor
-                    m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[0]) / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value((num_params[1] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    /* inductor */
-                    m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[2]) / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value((num_params[3] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    break;
-            }
-        }
-        if (m_net->get_type() == NET_TYPE_HIGHPASS)
-        {
-            m_net->set_highpass_order(m_higher_order_combo->get_active_row_number() + 1);
-
-            auto const cutoff = m_higher_co_freq_spinbutton->get_value();
-
-            switch (m_net->get_highpass_order())
-            {
-                case NET_ORDER_1ST:
-                    num_params = get_filter_params(NET_BUTTERWORTH, NET_ORDER_1ST, NET_TYPE_HIGHPASS);
-                    m_net->parts()[index].set_value(num_params[0] / (speaker.get_rdc() * cutoff)
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    m_net->set_highpass_family(NET_BUTTERWORTH);
-                    break;
-                case NET_ORDER_2ND:
-                    switch (m_higher_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BUTTERWORTH);
-                            break;
-                        case 2: // chebychev
-                            num_params = get_filter_params(NET_CHEBYCHEV,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_CHEBYCHEV);
-                            break;
-                        case 3: // linkwitz-riley
-                            num_params = get_filter_params(NET_LINKWITZRILEY,
-                                                           NET_ORDER_2ND,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_LINKWITZRILEY);
-                            break;
-                    }
-                    // capacitor
-                    m_net->parts()[index].set_value((num_params[0] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    // inductor
-                    m_net->parts()[index].set_value((num_params[1] * speaker.get_rdc() / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    break;
-                case NET_ORDER_3RD:
-                    switch (m_higher_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL,
-                                                           NET_ORDER_3RD,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_3RD,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BUTTERWORTH);
-                            break;
-                    }
-                    /* capacitor */
-                    m_net->parts()[index].set_value(num_params[0] / (speaker.get_rdc() * cutoff)
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    /* inductor */
-                    m_net->parts()[index].set_value(num_params[1] * speaker.get_rdc() / cutoff * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value(num_params[2] / (speaker.get_rdc() * cutoff)
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    break;
-                case NET_ORDER_4TH:
-                    switch (m_higher_type_combo->get_active_row_number())
-                    {
-                        case 0: // bessel
-                            num_params = get_filter_params(NET_BESSEL,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BESSEL);
-                            break;
-                        case 1: // butterworth
-                            num_params = get_filter_params(NET_BUTTERWORTH,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_BUTTERWORTH);
-                            break;
-                        case 2: // gaussian
-                            num_params = get_filter_params(NET_GAUSSIAN,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_GAUSSIAN);
-                            break;
-                        case 3: // legendre
-                            num_params = get_filter_params(NET_LEGENDRE,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_LEGENDRE);
-                            break;
-                        case 4: // liner-phase
-                            num_params = get_filter_params(NET_LINEARPHASE,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_LINEARPHASE);
-                            break;
-                        case 5: // linkwitz-riley
-                            num_params = get_filter_params(NET_LINKWITZRILEY,
-                                                           NET_ORDER_4TH,
-                                                           NET_TYPE_HIGHPASS);
-                            m_net->set_highpass_family(NET_LINKWITZRILEY);
-                            break;
-                    }
-
-                    /* capacitor */
-                    m_net->parts()[index].set_value((num_params[0] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    /* inductor */
-                    m_net->parts()[index].set_value((num_params[1] * speaker.get_rdc() / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    /* capacitor */
-                    m_net->parts()[index].set_value((num_params[2] / (speaker.get_rdc() * cutoff))
-                                                    * 1000000);
-                    m_net->parts()[index++].set_unit("u");
-                    /* inductor */
-                    m_net->parts()[index].set_value((num_params[3] * speaker.get_rdc() / cutoff)
-                                                    * 1000);
-                    m_net->parts()[index++].set_unit("m");
-                    break;
-            }
-        }
-
-        std::puts("Checking impedance correction state");
-
-        if (m_imp_corr_checkbutton.get_active())
-        {
-            m_net->set_has_imp_corr(true);
-
-            // calc imp corr here
-            m_net->get_imp_corr_C().set_value(speaker.get_lvc() / 1000
-                                              / std::pow(speaker.get_rdc(), 2) * 1000000);
-            m_net->get_imp_corr_C().set_unit("u");
-            m_net->get_imp_corr_R().set_value(speaker.get_rdc());
-        }
-        else
-        {
-            m_net->set_has_imp_corr(false);
-        }
-
-        m_net->set_adv_imp_model(static_cast<int>(m_adv_imp_model_checkbutton.get_active()));
-
-        std::puts("Checking dampening correction state");
-
-        if (m_damp_spinbutton.get_value_as_int() != 0)
-        {
-            m_net->set_has_damp(true);
-
-            // Calculate resistors for damping network
-            auto const r_ser = speaker.get_rdc()
-                               * (std::pow(10, m_damp_spinbutton.get_value() / 20) - 1);
-            auto const r_par = speaker.get_rdc() + std::pow(speaker.get_rdc(), 2) / r_ser;
-            m_net->get_damp_R2().set_value(r_ser);
-            m_net->get_damp_R1().set_value(r_par);
-        }
-        else
-        {
-            m_net->set_has_damp(false);
-        }
-
-        std::puts("Signaling wizard - magic!");
-
-        signal_net_modified_by_wizard();
-
-        std::puts("I don't work anymore ;()");
-
-        if (g_settings.getValueBool("AutoUpdateFilterPlots"))
-        {
-            std::puts("Updating plots");
-
-            on_plot_crossover();
-        }
-        enable_edit = true;
-
-        std::puts("Finalised update");
+        return;
     }
+
+    std::puts("filter_link_frame::on_param_changed updating");
+
+    enable_edit = false;
+
+    Speaker speaker = m_speaker_list->get_speaker_by_id_string(m_speaker_combo.get_active_text());
+
+    m_net->set_speaker(speaker.get_id_string());
+
+    int index = 0;
+    std::vector<double> num_params;
+
+    if (m_net->get_type() & NET_TYPE_LOWPASS)
+    {
+        m_net->set_lowpass_order(m_lower_order_combo->get_active_row_number() + 1);
+        double const cutoff = m_lower_co_freq_spinbutton->get_value();
+
+        switch (m_net->get_lowpass_order())
+        {
+            case NET_ORDER_1ST:
+                num_params = get_filter_params(NET_BUTTERWORTH, NET_ORDER_1ST, NET_TYPE_LOWPASS);
+                m_net->parts()[index].set_value((speaker.get_rdc() / (num_params[0] * cutoff)) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                m_net->set_lowpass_family(NET_BUTTERWORTH);
+                break;
+            case NET_ORDER_2ND:
+                switch (m_lower_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_2ND, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_2ND,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BUTTERWORTH);
+                        break;
+                    case 2: // chebychev
+                        num_params = get_filter_params(NET_CHEBYCHEV, NET_ORDER_2ND, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_CHEBYCHEV);
+                        break;
+                    case 3: // linkwitz-riley
+                        num_params = get_filter_params(NET_LINKWITZRILEY,
+                                                       NET_ORDER_2ND,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_LINKWITZRILEY);
+                        break;
+                }
+                /* inductor */
+                m_net->parts()[index].set_value(speaker.get_rdc() * num_params[0] / cutoff * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value(num_params[1] / (speaker.get_rdc() * cutoff)
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                break;
+            case NET_ORDER_3RD:
+                switch (m_lower_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_3RD, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_3RD,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BUTTERWORTH);
+                        break;
+                }
+                /* inductor */
+                m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[0]) / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value((num_params[1] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                /* inductor */
+                m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[2]) / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                break;
+            case NET_ORDER_4TH:
+                switch (m_lower_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_4TH, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_BUTTERWORTH);
+                        break;
+                    case 2: // gaussian
+                        num_params = get_filter_params(NET_GAUSSIAN, NET_ORDER_4TH, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_GAUSSIAN);
+                        break;
+                    case 3: // legendre
+                        num_params = get_filter_params(NET_LEGENDRE, NET_ORDER_4TH, NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_LEGENDRE);
+                        break;
+                    case 4: // liner-phase
+                        num_params = get_filter_params(NET_LINEARPHASE,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_LINEARPHASE);
+                        break;
+                    case 5: // linkwitz-riley
+                        num_params = get_filter_params(NET_LINKWITZRILEY,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_LOWPASS);
+                        m_net->set_lowpass_family(NET_LINKWITZRILEY);
+                        break;
+                }
+                // inductor
+                m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[0]) / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value((num_params[1] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                /* inductor */
+                m_net->parts()[index].set_value(((speaker.get_rdc() * num_params[2]) / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value((num_params[3] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                break;
+        }
+    }
+    if (m_net->get_type() & NET_TYPE_HIGHPASS)
+    {
+        m_net->set_highpass_order(m_higher_order_combo->get_active_row_number() + 1);
+
+        auto const cutoff = m_higher_co_freq_spinbutton->get_value();
+
+        switch (m_net->get_highpass_order())
+        {
+            case NET_ORDER_1ST:
+                num_params = get_filter_params(NET_BUTTERWORTH, NET_ORDER_1ST, NET_TYPE_HIGHPASS);
+                m_net->parts()[index].set_value(num_params[0] / (speaker.get_rdc() * cutoff)
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                m_net->set_highpass_family(NET_BUTTERWORTH);
+                break;
+            case NET_ORDER_2ND:
+                switch (m_higher_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_2ND, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_2ND,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BUTTERWORTH);
+                        break;
+                    case 2: // chebychev
+                        num_params = get_filter_params(NET_CHEBYCHEV, NET_ORDER_2ND, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_CHEBYCHEV);
+                        break;
+                    case 3: // linkwitz-riley
+                        num_params = get_filter_params(NET_LINKWITZRILEY,
+                                                       NET_ORDER_2ND,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_LINKWITZRILEY);
+                        break;
+                }
+                // capacitor
+                m_net->parts()[index].set_value((num_params[0] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                // inductor
+                m_net->parts()[index].set_value((num_params[1] * speaker.get_rdc() / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                break;
+            case NET_ORDER_3RD:
+                switch (m_higher_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_3RD, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_3RD,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BUTTERWORTH);
+                        break;
+                }
+                /* capacitor */
+                m_net->parts()[index].set_value(num_params[0] / (speaker.get_rdc() * cutoff)
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                /* inductor */
+                m_net->parts()[index].set_value(num_params[1] * speaker.get_rdc() / cutoff * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value(num_params[2] / (speaker.get_rdc() * cutoff)
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                break;
+            case NET_ORDER_4TH:
+                switch (m_higher_type_combo->get_active_row_number())
+                {
+                    case 0: // bessel
+                        num_params = get_filter_params(NET_BESSEL, NET_ORDER_4TH, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BESSEL);
+                        break;
+                    case 1: // butterworth
+                        num_params = get_filter_params(NET_BUTTERWORTH,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_BUTTERWORTH);
+                        break;
+                    case 2: // gaussian
+                        num_params = get_filter_params(NET_GAUSSIAN, NET_ORDER_4TH, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_GAUSSIAN);
+                        break;
+                    case 3: // legendre
+                        num_params = get_filter_params(NET_LEGENDRE, NET_ORDER_4TH, NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_LEGENDRE);
+                        break;
+                    case 4: // liner-phase
+                        num_params = get_filter_params(NET_LINEARPHASE,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_LINEARPHASE);
+                        break;
+                    case 5: // linkwitz-riley
+                        num_params = get_filter_params(NET_LINKWITZRILEY,
+                                                       NET_ORDER_4TH,
+                                                       NET_TYPE_HIGHPASS);
+                        m_net->set_highpass_family(NET_LINKWITZRILEY);
+                        break;
+                }
+
+                /* capacitor */
+                m_net->parts()[index].set_value((num_params[0] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                /* inductor */
+                m_net->parts()[index].set_value((num_params[1] * speaker.get_rdc() / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                /* capacitor */
+                m_net->parts()[index].set_value((num_params[2] / (speaker.get_rdc() * cutoff))
+                                                * 1000000);
+                m_net->parts()[index++].set_unit("u");
+                /* inductor */
+                m_net->parts()[index].set_value((num_params[3] * speaker.get_rdc() / cutoff) * 1000);
+                m_net->parts()[index++].set_unit("m");
+                break;
+        }
+    }
+
+    std::puts("Checking impedance correction state");
+
+    if (m_imp_corr_checkbutton.get_active())
+    {
+        m_net->set_has_imp_corr(true);
+
+        // calc imp corr here
+        m_net->get_imp_corr_C().set_value(speaker.get_lvc() / 1000 / std::pow(speaker.get_rdc(), 2)
+                                          * 1000000);
+        m_net->get_imp_corr_C().set_unit("u");
+        m_net->get_imp_corr_R().set_value(speaker.get_rdc());
+    }
+    else
+    {
+        m_net->set_has_imp_corr(false);
+    }
+
+    m_net->set_adv_imp_model(static_cast<int>(m_adv_imp_model_checkbutton.get_active()));
+
+    std::puts("Checking dampening correction state");
+
+    if (m_damp_spinbutton.get_value_as_int() != 0)
+    {
+        m_net->set_has_damp(true);
+
+        // Calculate resistors for damping network
+        auto const r_ser = speaker.get_rdc() * (std::pow(10, m_damp_spinbutton.get_value() / 20) - 1);
+        auto const r_par = speaker.get_rdc() + std::pow(speaker.get_rdc(), 2) / r_ser;
+        m_net->get_damp_R2().set_value(r_ser);
+        m_net->get_damp_R1().set_value(r_par);
+    }
+    else
+    {
+        m_net->set_has_damp(false);
+    }
+
+    std::puts("Signaling wizard - magic!");
+
+    signal_net_modified_by_wizard();
+
+    std::puts("I don't work anymore ;()");
+
+    if (g_settings.getValueBool("AutoUpdateFilterPlots"))
+    {
+        std::puts("Updating plots");
+
+        on_plot_crossover();
+    }
+
+    enable_edit = true;
+
+    std::puts("Finalised update");
 }
 
 void filter_link_frame::on_net_updated(Net* net)
 {
     if (m_net->get_id() == net->get_id())
     {
-#ifdef OUPUTDEBUG
-        std::cout << "filter_link_frame::on_net_updated" << std::endl;
-#endif
+        std::puts("filter_link_frame::on_net_updated");
 
         if (g_settings.getValueBool("AutoUpdateFilterPlots"))
         {
@@ -712,9 +684,8 @@ void filter_link_frame::on_clear_and_plot()
 
 void filter_link_frame::on_speakerlist_loaded(speaker_list* speaker_list)
 {
-#ifndef NDEBUG
     std::puts("filter_link_frame::on_speakerlist_loaded");
-#endif
+
     m_speaker_list = speaker_list;
 
     std::string const& speaker_name = m_net->get_speaker();
@@ -748,24 +719,28 @@ void filter_link_frame::on_speakerlist_loaded(speaker_list* speaker_list)
 
 void filter_link_frame::on_plot_crossover()
 {
-    std::puts("DEBUG: plotting cross-over");
+    std::puts("filter_link_frame::plotting cross-over");
+
+    if (m_speaker_list == nullptr)
+    {
+        return;
+    }
+
+    std::puts("filter_link_frame::plotting cross-over updating");
 
     // Create spice code for this net
-    Speaker speaker;
-    if (m_speaker_list != nullptr)
-    {
-        speaker = m_speaker_list->get_speaker_by_id_string(m_speaker_combo.get_active_text());
-    }
+    Speaker const& speaker = m_speaker_list->get_speaker_by_id_string(
+        m_speaker_combo.get_active_text());
 
     std::string spice_filename;
     try
     {
         spice_filename = m_net->to_SPICE(speaker, g_settings.getValueBool("SPICEUseGNUCAP"));
     }
-    catch (std::runtime_error const& e)
+    catch (std::runtime_error const& error)
     {
         Gtk::MessageDialog(_("filter_link_frame::on_plot_crossover: ERROR: ")
-                               + Glib::ustring(e.what()),
+                               + Glib::ustring(error.what()),
                            false,
                            Gtk::MESSAGE_ERROR,
                            Gtk::BUTTONS_OK,
@@ -863,7 +838,7 @@ void filter_link_frame::on_plot_crossover()
                 m_lower_co_freq_spinbutton->set_value(ytodbdiff / ydiff * xdiff
                                                       + points[index1 + 1].get_x());
             }
-            if ((m_net->get_type() & NET_TYPE_HIGHPASS) != 0)
+            if (m_net->get_type() & NET_TYPE_HIGHPASS)
             {
                 auto position = std::find_if(begin(points), end(points), [&](auto const& point) {
                     return point.get_y() >= -3 - m_damp_spinbutton.get_value();
@@ -889,17 +864,17 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
 {
     std::puts("Populating filter parameters");
 
-    std::vector<double> nums;
+    std::vector<double> parameters;
     switch (net_order)
     {
         case NET_ORDER_1ST:
             switch (net_type)
             {
                 case NET_TYPE_LOWPASS:
-                    nums.push_back(6.28);
+                    parameters.push_back(6.28);
                     break;
                 case NET_TYPE_HIGHPASS:
-                    nums.push_back(0.159);
+                    parameters.push_back(0.159);
                     break;
             }
             break;
@@ -910,12 +885,12 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.2756);
-                            nums.push_back(0.0912);
+                            parameters.push_back(0.2756);
+                            parameters.push_back(0.0912);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.0912);
-                            nums.push_back(0.2756);
+                            parameters.push_back(0.0912);
+                            parameters.push_back(0.2756);
                             break;
                     }
                     break;
@@ -923,12 +898,12 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.2251);
-                            nums.push_back(0.1125);
+                            parameters.push_back(0.2251);
+                            parameters.push_back(0.1125);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.1125);
-                            nums.push_back(0.2251);
+                            parameters.push_back(0.1125);
+                            parameters.push_back(0.2251);
                             break;
                     }
                     break;
@@ -936,12 +911,12 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.1592);
-                            nums.push_back(0.1592);
+                            parameters.push_back(0.1592);
+                            parameters.push_back(0.1592);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.1592);
-                            nums.push_back(0.1592);
+                            parameters.push_back(0.1592);
+                            parameters.push_back(0.1592);
                             break;
                     }
                     break;
@@ -949,12 +924,12 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3183);
-                            nums.push_back(0.0796);
+                            parameters.push_back(0.3183);
+                            parameters.push_back(0.0796);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.3183);
-                            nums.push_back(0.0796);
+                            parameters.push_back(0.3183);
+                            parameters.push_back(0.0796);
                             break;
                     }
                     break;
@@ -967,14 +942,14 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3294);
-                            nums.push_back(0.1897);
-                            nums.push_back(0.06592);
+                            parameters.push_back(0.3294);
+                            parameters.push_back(0.1897);
+                            parameters.push_back(0.06592);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.07911);
-                            nums.push_back(0.1317);
-                            nums.push_back(0.3953);
+                            parameters.push_back(0.07911);
+                            parameters.push_back(0.1317);
+                            parameters.push_back(0.3953);
                             break;
                     }
                     break;
@@ -982,14 +957,14 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.2387);
-                            nums.push_back(0.2122);
-                            nums.push_back(0.0796);
+                            parameters.push_back(0.2387);
+                            parameters.push_back(0.2122);
+                            parameters.push_back(0.0796);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.1061);
-                            nums.push_back(0.1194);
-                            nums.push_back(0.3183);
+                            parameters.push_back(0.1061);
+                            parameters.push_back(0.1194);
+                            parameters.push_back(0.3183);
                             break;
                     }
                     break;
@@ -1002,16 +977,16 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3583);
-                            nums.push_back(0.2336);
-                            nums.push_back(0.1463);
-                            nums.push_back(0.0504);
+                            parameters.push_back(0.3583);
+                            parameters.push_back(0.2336);
+                            parameters.push_back(0.1463);
+                            parameters.push_back(0.0504);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.0702);
-                            nums.push_back(0.0862);
-                            nums.push_back(0.0719);
-                            nums.push_back(0.4983);
+                            parameters.push_back(0.0702);
+                            parameters.push_back(0.0862);
+                            parameters.push_back(0.0719);
+                            parameters.push_back(0.4983);
                             break;
                     }
                     break;
@@ -1019,16 +994,16 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.2437);
-                            nums.push_back(0.2509);
-                            nums.push_back(0.1723);
-                            nums.push_back(0.0609);
+                            parameters.push_back(0.2437);
+                            parameters.push_back(0.2509);
+                            parameters.push_back(0.1723);
+                            parameters.push_back(0.0609);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.1040);
-                            nums.push_back(0.1009);
-                            nums.push_back(0.1470);
-                            nums.push_back(0.4159);
+                            parameters.push_back(0.1040);
+                            parameters.push_back(0.1009);
+                            parameters.push_back(0.1470);
+                            parameters.push_back(0.4159);
                             break;
                     }
                     break;
@@ -1036,16 +1011,16 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3253);
-                            nums.push_back(0.2235);
-                            nums.push_back(0.1674);
-                            nums.push_back(0.0768);
+                            parameters.push_back(0.3253);
+                            parameters.push_back(0.2235);
+                            parameters.push_back(0.1674);
+                            parameters.push_back(0.0768);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.0767);
-                            nums.push_back(0.1116);
-                            nums.push_back(0.1491);
-                            nums.push_back(0.3251);
+                            parameters.push_back(0.0767);
+                            parameters.push_back(0.1116);
+                            parameters.push_back(0.1491);
+                            parameters.push_back(0.3251);
                             break;
                     }
                     break;
@@ -1053,32 +1028,32 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.2294);
-                            nums.push_back(0.2365);
-                            nums.push_back(0.2034);
-                            nums.push_back(0.0910);
+                            parameters.push_back(0.2294);
+                            parameters.push_back(0.2365);
+                            parameters.push_back(0.2034);
+                            parameters.push_back(0.0910);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.1104);
-                            nums.push_back(0.1073);
-                            nums.push_back(0.1246);
-                            nums.push_back(0.2783);
+                            parameters.push_back(0.1104);
+                            parameters.push_back(0.1073);
+                            parameters.push_back(0.1246);
+                            parameters.push_back(0.2783);
                             break;
                     }
                 case NET_LINEARPHASE:
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3285);
-                            nums.push_back(0.2255);
-                            nums.push_back(0.1578);
-                            nums.push_back(0.0632);
+                            parameters.push_back(0.3285);
+                            parameters.push_back(0.2255);
+                            parameters.push_back(0.1578);
+                            parameters.push_back(0.0632);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.0741);
-                            nums.push_back(0.1079);
-                            nums.push_back(0.1524);
-                            nums.push_back(0.3853);
+                            parameters.push_back(0.0741);
+                            parameters.push_back(0.1079);
+                            parameters.push_back(0.1524);
+                            parameters.push_back(0.3853);
                             break;
                     }
                     break;
@@ -1086,16 +1061,16 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
                     switch (net_type)
                     {
                         case NET_TYPE_LOWPASS:
-                            nums.push_back(0.3000);
-                            nums.push_back(0.2533);
-                            nums.push_back(0.1500);
-                            nums.push_back(0.0563);
+                            parameters.push_back(0.3000);
+                            parameters.push_back(0.2533);
+                            parameters.push_back(0.1500);
+                            parameters.push_back(0.0563);
                             break;
                         case NET_TYPE_HIGHPASS:
-                            nums.push_back(0.0844);
-                            nums.push_back(0.1000);
-                            nums.push_back(0.1688);
-                            nums.push_back(0.4501);
+                            parameters.push_back(0.0844);
+                            parameters.push_back(0.1000);
+                            parameters.push_back(0.1688);
+                            parameters.push_back(0.4501);
                             break;
                     }
                     break;
@@ -1103,22 +1078,21 @@ auto filter_link_frame::get_filter_params(int net_name_type, int net_order, int 
             break;
     }
 
-    if (nums.empty())
+    if (parameters.empty())
     {
         throw std::runtime_error("Filter parameters was not correctly populated");
     }
 
     std::puts("Finished populating parameters");
 
-    return nums;
+    return parameters;
 }
 
 void filter_link_frame::set_family(Gtk::ComboBoxText* option_menu, int order, int family)
 {
-#ifndef NDEBUG
     std::cout << "filter_link_frame::set_family: order = " << order << ", family = " << family
               << std::endl;
-#endif
+
     switch (order)
     {
         case NET_ORDER_2ND:
