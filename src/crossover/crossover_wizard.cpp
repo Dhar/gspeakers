@@ -74,8 +74,8 @@ void crossover_wizard::on_crossover_selected(Crossover* crossover)
         {
             if (index == 0)
             {
-                m_vbox.pack_start(
-                    *Gtk::manage(new filter_link_frame(&network, _("Woofer filter"), m_speaker_list)));
+                m_vbox.pack_start(*Gtk::manage(
+                    new filter_link_frame(&network, _("Woofer filter"), m_speaker_list)));
             }
             else if (index == 1)
             {
@@ -92,8 +92,8 @@ void crossover_wizard::on_crossover_selected(Crossover* crossover)
         {
             if (index == 0)
             {
-                m_vbox.pack_start(
-                    *Gtk::manage(new filter_link_frame(&network, _("Woofer filter"), m_speaker_list)));
+                m_vbox.pack_start(*Gtk::manage(
+                    new filter_link_frame(&network, _("Woofer filter"), m_speaker_list)));
             }
             else if (index == 1)
             {
