@@ -72,11 +72,11 @@ filter_link_frame::filter_link_frame(Net* net,
     {
         this->initialise_dampening();
     }
-    if (net->get_type() == NET_TYPE_HIGHPASS)
+    if (net->get_type() & NET_TYPE_HIGHPASS)
     {
         this->initialise_highpass_filter();
     }
-    if (m_net->get_type() == NET_TYPE_LOWPASS)
+    if (m_net->get_type() & NET_TYPE_LOWPASS)
     {
         this->initialise_lowpass_filter();
     }
@@ -243,7 +243,7 @@ void filter_link_frame::connect_signals()
     m_speaker_combo.signal_changed().connect(
         sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
 
-    if ((m_net->get_type() & NET_TYPE_LOWPASS) != 0)
+    if (m_net->get_type() & NET_TYPE_LOWPASS)
     {
         m_lower_order_combo->signal_changed().connect(
             sigc::bind(sigc::mem_fun(*this, &filter_link_frame::on_order_selected),
@@ -256,7 +256,7 @@ void filter_link_frame::connect_signals()
         m_lower_co_freq_spinbutton->signal_value_changed().connect(
             sigc::mem_fun(*this, &filter_link_frame::on_param_changed));
     }
-    if ((m_net->get_type() & NET_TYPE_HIGHPASS) != 0)
+    if (m_net->get_type() & NET_TYPE_HIGHPASS)
     {
         m_higher_order_combo->signal_changed().connect(
             sigc::bind(sigc::mem_fun(*this, &filter_link_frame::on_order_selected),
@@ -836,17 +836,17 @@ void filter_link_frame::on_plot_crossover()
                 }
             }
         }
-        Gdk::Color c = m_net->get_type() == NET_TYPE_LOWPASS
+        Gdk::Color c = m_net->get_type() & NET_TYPE_LOWPASS
                            ? Gdk::Color("blue")
-                           : m_net->get_type() == NET_TYPE_HIGHPASS ? Gdk::Color("red")
-                                                                    : Gdk::Color("darkgreen");
+                           : m_net->get_type() & NET_TYPE_HIGHPASS ? Gdk::Color("red")
+                                                                   : Gdk::Color("darkgreen");
         // send the spice data to the plot
         signal_add_crossover_plot(points, c, my_filter_plot_index, m_net);
 
         if (enable_edit)
         {
             enable_edit = false;
-            if ((m_net->get_type() & NET_TYPE_LOWPASS) != 0)
+            if (m_net->get_type() & NET_TYPE_LOWPASS)
             {
                 auto const location = std::find_if(begin(points), end(points), [&](auto const& point) {
                     return point.get_y() > (-3 - m_damp_spinbutton.get_value());
