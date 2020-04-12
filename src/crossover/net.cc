@@ -752,7 +752,17 @@ auto Net::to_SPICE(Speaker const& s, bool use_gnucap) -> std::string
     }
     else
     {
+        if (buffer)
+        {
+            delete[] buffer;
+            buffer = nullptr;
+        }
         throw std::runtime_error("Net::to_SPICE: could not write " + tmp_file);
+    }
+    if (buffer)
+    {
+        delete[] buffer;
+        buffer = nullptr;
     }
     return tmp_file;
 }
