@@ -80,7 +80,7 @@ public:
     /// Print part data to stdout
     friend auto operator<<(std::ostream& o, const Net& net) -> std::ostream&;
 
-    auto to_SPICE(Speaker& s, bool use_gnucap = false) -> std::string;
+    auto to_SPICE(Speaker const& s, bool use_gnucap = false) -> std::string;
 
     auto parts() -> std::vector<passive_component>& { return m_parts; }
 

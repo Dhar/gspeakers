@@ -514,7 +514,7 @@ auto Net::to_xml_node(xmlNodePtr parent) -> xmlNodePtr
     return net;
 }
 
-auto Net::to_SPICE(Speaker& s, bool use_gnucap) -> std::string
+auto Net::to_SPICE(Speaker const& s, bool use_gnucap) -> std::string
 {
     std::string tmp_dir = Glib::get_tmp_dir();
 #ifdef TARGET_WIN32
