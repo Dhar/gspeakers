@@ -30,7 +30,7 @@
 #define SPEAKER_TYPE_TWEETER 4
 
 /// This class contains data for a speaker
-class Speaker : public GSpeakersObject
+class Speaker : public gspkObject
 {
 public:
     /// Default values from Vifa P21WO-20-08

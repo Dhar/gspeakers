@@ -30,7 +30,7 @@
 constexpr auto BOX_TYPE_SEALED = 1;
 constexpr auto BOX_TYPE_PORTED = 2;
 
-class Box : public GSpeakersObject
+class Box : public gspkObject
 {
 public:
     Box(std::string id_string = "",

@@ -235,7 +235,7 @@ auto crossover_pane::get_toolbar() -> Gtk::Toolbar&
     m_toolbar->append(*Gtk::manage(new Gtk::SeparatorToolItem()));
     {
         auto t = Gtk::manage(
-            new Gtk::ToolButton(GSpeakers::image_widget("stock_plot_crossover_24.png"), _("Plot")));
+            new Gtk::ToolButton(gspk::image_widget("stock_plot_crossover_24.png"), _("Plot")));
         t->signal_clicked().connect(sigc::mem_fun(*this, &crossover_pane::on_plot_crossover));
         m_toolbar->append(*t);
     }
@@ -296,6 +296,6 @@ void crossover_pane::set_save_state(bool state)
         // }
         // m_menu_item.get_children().at(MENU_INDEX_SAVE)->set_sensitive(state);
 
-        GSpeakers::crossoverlist_modified() = state;
+        gspk::crossoverlist_modified() = state;
     }
 }

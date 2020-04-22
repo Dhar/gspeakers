@@ -44,7 +44,7 @@ Speaker::Speaker(std::string id_string,
                  double bl,
                  double rms,
                  double cms)
-    : GSpeakersObject(),
+    : gspkObject(),
       m_qts(qts),
       m_qms(qms),
       m_qes(qes),

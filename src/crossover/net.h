@@ -53,7 +53,7 @@ constexpr auto NET_LINEARPHASE = 7;
 /// For example: Lowpassfilter with impedance correction network or highpassfilter with
 ///              damping network.
 /// TODO: Use c++ streams for input in passive_component(xmlNodePtr)
-class Net : public GSpeakersObject
+class Net : public gspkObject
 {
 public:
     /// Construct new net object
