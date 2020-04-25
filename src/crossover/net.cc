@@ -536,7 +536,6 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
     int node_counter = 0;
     int part_index = 0;
     int next_node_cnt_inc = 1;
-    auto* buffer = new gchar[8];
 
     std::ofstream of(tmp_file.c_str());
     if (of.good())
