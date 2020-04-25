@@ -49,10 +49,6 @@ crossover_image_view::crossover_image_view()
 
 auto crossover_image_view::on_expose_event(GdkEventExpose* event) -> bool
 {
-    // get_window()->draw_drawable(get_style()->get_fg_gc(get_state()), m_refPixmap,
-    //                             // Only copy the area that was exposed
-    //                             event->area.x, event->area.y, event->area.x,
-    //                             event->area.y, event->area.width, event->area.height);
     return false;
 }
 
@@ -74,10 +70,7 @@ auto crossover_image_view::on_configure_event(GdkEventConfigure* event) -> bool
     white = Gdk::RGBA("rgb (0.0, 0.0, 0.0)");
     black = Gdk::RGBA("rgb (1.0, 1.0, 1.0)");
 
-    Glib::RefPtr<Pango::Context> refPangoContext = get_pango_context();
-    m_refLayout = Pango::Layout::create(refPangoContext);
-
-    // redraw();
+    m_refLayout = Pango::Layout::create(get_pango_context());
 
     // We've handled the configure event, no need for further processing
     return true;
