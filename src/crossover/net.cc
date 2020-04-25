@@ -553,7 +553,7 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -561,12 +561,11 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "C" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "C" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -574,18 +573,17 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "C" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "C" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -593,23 +591,21 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "C" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "C" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     node_counter++;
                     of << "L" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "C" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "C" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -623,7 +619,7 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -631,12 +627,11 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "L" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "L" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -644,18 +639,17 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "L" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "L" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -663,23 +657,21 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "L" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "L" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     node_counter++;
                     of << "C" << m_parts[part_index].get_id() << " " << node_counter
                        << " " << node_counter - 1 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                       << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
-                    of << "L" << m_parts[part_index].get_id() << " " << node_counter
-                       << " " << 0 << " "
-                       << g_ascii_dtostr(buffer, 8, m_parts[part_index].get_value())
+                    of << "L" << m_parts[part_index].get_id() << " " << node_counter << " "
+                       << 0 << " " << std::to_string(m_parts[part_index].get_value())
                        << m_parts[part_index].get_unit() << "\n";
                     part_index++;
                     break;
@@ -689,10 +681,10 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
         if (m_has_imp_corr)
         {
             of << "R" << m_imp_corr_R.get_id() << " " << node_counter << " "
-               << node_counter + 1 << " "
-               << g_ascii_dtostr(buffer, 8, m_imp_corr_R.get_value()) << "\n";
+               << node_counter + 1 << " " << std::to_string(m_imp_corr_R.get_value())
+               << "\n";
             of << "C" << m_imp_corr_C.get_id() << " " << node_counter + 1 << " " << 0
-               << " " << g_ascii_dtostr(buffer, 8, m_imp_corr_C.get_value())
+               << " " << std::to_string(m_imp_corr_C.get_value())
                << m_imp_corr_C.get_unit() << "\n";
             next_node_cnt_inc = 2;
         }
@@ -703,10 +695,10 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
         if (m_has_damp)
         {
             of << "R" << m_damp_R1.get_id() << " " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, m_damp_R1.get_value()) << "\n";
+               << std::to_string(m_damp_R1.get_value()) << "\n";
             of << "R" << m_damp_R2.get_id() << " " << node_counter << " "
                << node_counter + next_node_cnt_inc << " "
-               << g_ascii_dtostr(buffer, 8, m_damp_R2.get_value()) << "\n";
+               << std::to_string(m_damp_R2.get_value()) << "\n";
             node_counter = node_counter + next_node_cnt_inc;
             next_node_cnt_inc = 1;
         }
@@ -733,20 +725,19 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
             of << "L" << s.get_id() << " " << node_counter << " " << node_counter + 1
                << " " << s.get_lvc() << "mH\n";
             node_counter = node_counter + 1;
-            of << "lces " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, lces) << "mH\n";
-            of << "cmes " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, cmes) << "uF\n";
-            of << "res " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, res) << "\n";
-            of << "cmef " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, cmef) << "uF\n";
+            of << "lces " << node_counter << " " << 0 << " " << std::to_string(lces)
+               << "mH\n";
+            of << "cmes " << node_counter << " " << 0 << " " << std::to_string(cmes)
+               << "uF\n";
+            of << "res " << node_counter << " " << 0 << " " << std::to_string(res) << "\n";
+            of << "cmef " << node_counter << " " << 0 << " " << std::to_string(cmef)
+               << "uF\n";
         }
         else
         {
             // simple model, model speaker as resistor
             of << "R" << s.get_id() << " " << node_counter << " " << 0 << " "
-               << g_ascii_dtostr(buffer, 8, s.get_rdc()) << "\n";
+               << std::to_string(s.get_rdc()) << "\n";
         }
 
         if (use_gnucap)
@@ -764,17 +755,7 @@ auto Net::to_SPICE(Speaker const& s, bool const use_gnucap) -> std::string
     }
     else
     {
-        if (buffer)
-        {
-            delete[] buffer;
-            buffer = nullptr;
-        }
         throw std::runtime_error("Net::to_SPICE: could not write " + tmp_file);
-    }
-    if (buffer)
-    {
-        delete[] buffer;
-        buffer = nullptr;
     }
     return tmp_file;
 }
